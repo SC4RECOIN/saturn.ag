@@ -1,6 +1,4 @@
 body {
-    background-color: #111;
-    color: #fff;
     font-family: 'Arial', sans-serif;
     display: flex;
     justify-content: center;
@@ -19,7 +17,7 @@ body {
     margin-bottom: 20px;
 }
 
-button {
+.buttons button {
     background-color: #000;
     color: #ffffff;
     border: none;
@@ -34,11 +32,11 @@ button {
     transition: background-color 0.3s;
 }
 
-button:hover {
+.buttons button:hover {
     background-color: #3700b3;
 }
 
-button img {
+.buttons button img {
     width: 24px;
     height: 24px;
 }
