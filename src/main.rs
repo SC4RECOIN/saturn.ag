@@ -1,6 +1,6 @@
 use leptos::*;
 use leptos_query::provide_query_client;
-use thaw::Button;
+use thaw::{Button, Modal};
 use wasi_sol::{
     core::wallet::Wallet,
     forms::leptos::login::LoginForm,
@@ -40,17 +40,19 @@ pub fn LoginPage() -> impl IntoView {
     let (solflare_wallet_adapter, set_solflare_wallet_adapter) = create_signal(solflare_context);
     let (backpack_wallet_adapter, set_sbackpack_wallet_adapter) = create_signal(backpack_context);
 
+    let show = create_rw_signal(false);
+
     view! {
         <div>
-            <div>
+            <Button on_click=move |_| show.set(true)>"Connect Wallet"</Button>
+            <Modal title="title" show>
                 <LoginForm
                     phantom=Some((phantom_wallet_adapter, set_phantom_wallet_adapter))
                     solflare=Some((solflare_wallet_adapter, set_solflare_wallet_adapter))
                     backpack=Some((backpack_wallet_adapter, set_sbackpack_wallet_adapter))
                     connected=(connected, set_connected)
                 />
-                <Button>"Click me"</Button>
-            </div>
+            </Modal>
         </div>
     }
 }
