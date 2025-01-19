@@ -1,4 +1,6 @@
 use leptos::*;
+use leptos_query::provide_query_client;
+use thaw::Button;
 use wasi_sol::{
     core::wallet::Wallet,
     forms::leptos::login::LoginForm,
@@ -16,6 +18,8 @@ pub fn App() -> impl IntoView {
         Wallet::Solflare.into(),
         Wallet::Backpack.into(),
     ];
+
+    provide_query_client();
 
     view! {
         <ConnectionProvider endpoint=endpoint>
@@ -45,6 +49,7 @@ pub fn LoginPage() -> impl IntoView {
                     backpack=Some((backpack_wallet_adapter, set_sbackpack_wallet_adapter))
                     connected=(connected, set_connected)
                 />
+                <Button>"Click me"</Button>
             </div>
         </div>
     }
