@@ -1,14 +1,13 @@
+use crate::components::wallet::WalletConnect;
 use leptos::*;
 use leptos_query::provide_query_client;
-use thaw::{Button, Modal};
+use thaw::{Grid, GridItem};
 use wasi_sol::{
     core::wallet::Wallet,
-    forms::leptos::login::LoginForm,
-    provider::leptos::{
-        connection::ConnectionProvider,
-        wallet::{use_wallet, WalletProvider},
-    },
+    provider::leptos::{connection::ConnectionProvider, wallet::WalletProvider},
 };
+
+pub mod components;
 
 #[component]
 pub fn App() -> impl IntoView {
@@ -32,27 +31,13 @@ pub fn App() -> impl IntoView {
 
 #[component]
 pub fn LoginPage() -> impl IntoView {
-    let phantom_context = use_wallet::<Wallet>(Wallet::Phantom);
-    let solflare_context = use_wallet::<Wallet>(Wallet::Solflare);
-    let backpack_context = use_wallet::<Wallet>(Wallet::Backpack);
-    let (connected, set_connected) = create_signal(false);
-    let (phantom_wallet_adapter, set_phantom_wallet_adapter) = create_signal(phantom_context);
-    let (solflare_wallet_adapter, set_solflare_wallet_adapter) = create_signal(solflare_context);
-    let (backpack_wallet_adapter, set_sbackpack_wallet_adapter) = create_signal(backpack_context);
-
-    let show = create_rw_signal(false);
-
     view! {
-        <div>
-            <Button on_click=move |_| show.set(true)>"Connect Wallet"</Button>
-            <Modal title="title" show>
-                <LoginForm
-                    phantom=Some((phantom_wallet_adapter, set_phantom_wallet_adapter))
-                    solflare=Some((solflare_wallet_adapter, set_solflare_wallet_adapter))
-                    backpack=Some((backpack_wallet_adapter, set_sbackpack_wallet_adapter))
-                    connected=(connected, set_connected)
-                />
-            </Modal>
+        <div class="content">
+            <Grid cols=5>
+                <GridItem offset=4>
+                    <WalletConnect />
+                </GridItem>
+            </Grid>
         </div>
     }
 }
