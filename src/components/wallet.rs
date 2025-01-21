@@ -2,8 +2,7 @@ use leptos::*;
 use thaw::{Alert, AlertVariant, Button, ButtonVariant, Image, Modal, Space, SpaceJustify};
 use wasi_sol::{
     core::{
-        wallet::Wallet,
-        traits::WalletAdapter
+        traits::WalletAdapter, wallet::{BaseWalletAdapter, Wallet}
     },
     provider::leptos::wallet::use_wallet,
 };
@@ -15,57 +14,17 @@ pub fn WalletConnect() -> impl IntoView {
     let (backpack_wallet_adapter, set_backpack_wallet_adapter) = create_signal(use_wallet(Wallet::Backpack));
 
     let (connected, set_connected) = create_signal(false);
-    let show = create_rw_signal(false);
     let (error, set_error) = create_signal(String::default());
+    let show = create_rw_signal(false);
 
-    let connect_phantom_wallet = move |_| {
+    let connect_wallet = move |wallet_adapter: ReadSignal<BaseWalletAdapter>, set_wallet_adapter:  WriteSignal<BaseWalletAdapter>| {
         spawn_local(async move {
-            let mut wallet_info = phantom_wallet_adapter.get();
+            let mut wallet_info = wallet_adapter.get();
 
             match wallet_info.connect().await {
                 Ok(confirmed) => {
                     if confirmed {
-                        set_phantom_wallet_adapter.set(wallet_info);
-                        show.set(false);
-                    }
-                    set_connected.set(confirmed);
-                }
-                Err(err) => {
-                    log::error!("Failed to connect wallet: {}", err);
-                    set_error.set(err.to_string());
-                }
-            }
-        });
-    };
-
-    let connect_solflare_wallet = move |_| {
-        spawn_local(async move {
-            let mut wallet_info = solflare_wallet_adapter.get();
-
-            match wallet_info.connect().await {
-                Ok(confirmed) => {
-                    if confirmed {
-                        set_phantom_wallet_adapter.set(wallet_info);
-                        show.set(false);
-                    }
-                    set_connected.set(confirmed);
-                }
-                Err(err) => {
-                    log::error!("Failed to connect wallet: {}", err);
-                    set_error.set(err.to_string());
-                }
-            }
-        });
-    };
-
-    let connect_backpack_wallet = move |_| {
-        spawn_local(async move {
-            let mut wallet_info = backpack_wallet_adapter.get();
-
-            match wallet_info.connect().await {
-                Ok(confirmed) => {
-                    if confirmed {
-                        set_phantom_wallet_adapter.set(wallet_info);
+                        set_wallet_adapter.set(wallet_info);
                         show.set(false);
                     }
                     set_connected.set(confirmed);
@@ -147,7 +106,10 @@ pub fn WalletConnect() -> impl IntoView {
                             <Space justify=SpaceJustify::SpaceAround>
                                 <Button
                                     variant=ButtonVariant::Outlined
-                                    on:click=connect_phantom_wallet
+                                    on:click=move |_| connect_wallet(
+                                        phantom_wallet_adapter,
+                                        set_phantom_wallet_adapter,
+                                    )
                                     class="wallet-button"
                                 >
                                     <Image
@@ -157,7 +119,10 @@ pub fn WalletConnect() -> impl IntoView {
                                     <p>"Phantom"</p>
                                 </Button>
                                 <Button
-                                    on:click=connect_solflare_wallet
+                                    on:click=move |_| connect_wallet(
+                                        solflare_wallet_adapter,
+                                        set_solflare_wallet_adapter,
+                                    )
                                     variant=ButtonVariant::Outlined
                                     class="wallet-button"
                                 >
@@ -168,7 +133,10 @@ pub fn WalletConnect() -> impl IntoView {
                                     <p>"Solflare"</p>
                                 </Button>
                                 <Button
-                                    on:click=connect_backpack_wallet
+                                    on:click=move |_| connect_wallet(
+                                        backpack_wallet_adapter,
+                                        set_backpack_wallet_adapter,
+                                    )
                                     variant=ButtonVariant::Outlined
                                     class="wallet-button"
                                 >
