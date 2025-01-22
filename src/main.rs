@@ -1,4 +1,5 @@
 use crate::components::wallet::WalletConnect;
+use components::swap::Swap;
 use leptos::*;
 use leptos_query::provide_query_client;
 use thaw::{Grid, GridItem};
@@ -38,6 +39,7 @@ pub fn LoginPage() -> impl IntoView {
                     <WalletConnect />
                 </GridItem>
             </Grid>
+            <Swap />
         </div>
     }
 }
