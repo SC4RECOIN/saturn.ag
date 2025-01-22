@@ -22,8 +22,114 @@ body {
     }
 }
 
+.swap-card {
+    border-radius: 16px;
+    padding: 24px;
+    width: 480px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.swap-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.swap-settings {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+
+    span {
+        color: #00b15d;
+        margin-left: 5px;
+    }
+    span:hover {
+        cursor: pointer;
+    }
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+}
+
 .asset-selector {
-    background-color: #fafafa;
-    padding: 1rem;
-    border-radius: 6px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.token-selector {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    background: white;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.token-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.amount-input {
+    text-align: right;
+    border: none;
+    background: none;
+    font-size: 24px;
+    font-weight: 500;
+    width: 200px;
+}
+
+.usd-value {
+    color: #666;
+    font-size: 14px;
+}
+
+.swap-arrow {
+    text-align: center;
+    margin: 8px 0;
+    color: #666;
+    font-size: 16px;
+}
+
+.swap-details {
+    border: 1px solid #e6e6e6;
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 24px;
+    font-size: 14px;
+
+    .row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        color: #666;
+    }
+}
+
+.connect-wallet {
+    width: 100%;
+    background: #000;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 24px;
+
+    &:hover {
+        background: #222;
+    }
 }

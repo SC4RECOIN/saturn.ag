@@ -15,11 +15,30 @@ pub fn Swap() -> impl IntoView {
     let output_value = create_rw_signal("0".to_string());
 
     view! {
-        <Space vertical=true>
-            <h3>Swap</h3>
+        <div class="swap-card">
+            <div class="swap-header">
+                <h3>"Swap"</h3>
+                <div class="swap-settings">"Priority fee:"<span>"Market"</span></div>
+            </div>
             <AssetSelector mint=input_mint amount=input_value />
+            <div class="swap-arrow">"↓"</div>
             <AssetSelector mint=output_mint amount=output_value />
-        </Space>
+            <div class="swap-details">
+                <div class="row">
+                    <span>"Rate"</span>
+                    <b>"1 USDC = 0.003683 SOL"</b>
+                </div>
+                <div class="row">
+                    <span>"Slippage"</span>
+                    <b>"0.1% ›"</b>
+                </div>
+                <div class="row">
+                    <span>"Minimum received"</span>
+                    <b>"1.839922 SOL"</b>
+                </div>
+            </div>
+            <button class="connect-wallet">"Connect wallet"</button>
+        </div>
     }
 }
 
@@ -33,19 +52,17 @@ pub fn AssetSelector(mint: RwSignal<Pubkey>, amount: RwSignal<String>) -> impl I
 
     view! {
         <div class="asset-selector">
-            <Space>
-                <Space>
-                    <Image
-                        src="https://www.okx.com/cdn/web3/currency/token/784-0xdba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC-1.png/type=default_350_0?v=1735272019523&x-oss-process=image/format,webp/ignore-error,1"
-                        alt="Asset Icon"
-                        width="32px"
-                        height="32px"
-                    />
-                    <div>"USDC"</div>
-                    <div>"▼"</div>
-                </Space>
-                <Input value=amount parser />
-            </Space>
+            <div class="token-selector">
+                <img
+                    src="https://www.okx.com/cdn/web3/currency/token/784-0xdba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC-1.png"
+                    alt="Asset Icon"
+                    class="token-icon"
+                />
+                <span class="token-symbol">"USDC"</span>
+                <span class="dropdown-arrow">"▼"</span>
+            </div>
+            <Input value=amount parser class="amount-input" />
+            <div class="usd-value">"$499.95"</div>
         </div>
     }
 }
