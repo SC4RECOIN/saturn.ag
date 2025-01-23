@@ -7,7 +7,7 @@ pub fn Providers() -> impl IntoView {
             <div class="flex justify-between mb-2">
                 <h3 class="font-bold text-lg">"Select provider"</h3>
             </div>
-            <p class="text-gray-500 text-xs leading-relaxed mb-5">
+            <p class="text-gray-500 text-xs mb-5">
                 Available providers and aggregators are ranked by the estimated received value after network fees from this transaction. Select your choice of providers below.
             </p>
             <div class="rounded-xl p-4 border border-gray-200 hover:border-black cursor-pointer transition-colors">
