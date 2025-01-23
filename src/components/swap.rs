@@ -1,7 +1,5 @@
-use std::str::FromStr;
-
 use leptos::*;
-use thaw::{Image, Input, Space};
+use std::str::FromStr;
 use wasi_sol::pubkey::Pubkey;
 
 #[component]
@@ -15,15 +13,15 @@ pub fn Swap() -> impl IntoView {
     let output_value = create_rw_signal("0".to_string());
 
     view! {
-        <div class="swap-card">
-            <div class="swap-header">
+        <div class="card">
+            <div class="card-header">
                 <h3>"Swap"</h3>
                 <div class="swap-settings">"Priority fee:"<span>"Market"</span></div>
             </div>
             <AssetSelector mint=input_mint amount=input_value />
             <div class="swap-arrow">"↓"</div>
             <AssetSelector mint=output_mint amount=output_value />
-            <div class="swap-details">
+            <div class="row-details">
                 <div class="row">
                     <span>"Rate"</span>
                     <b>"1 USDC = 0.003683 SOL"</b>
@@ -61,7 +59,7 @@ pub fn AssetSelector(mint: RwSignal<Pubkey>, amount: RwSignal<String>) -> impl I
                 <span class="token-symbol">"USDC"</span>
                 <span class="dropdown-arrow">"▼"</span>
             </div>
-            <Input value=amount parser class="amount-input" />
+            <input value=amount parser class="amount-input" />
             <div class="usd-value">"$499.95"</div>
         </div>
     }

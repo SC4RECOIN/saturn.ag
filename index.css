@@ -22,17 +22,17 @@ body {
     }
 }
 
-.swap-card {
+.card {
     border-radius: 16px;
     padding: 24px;
     width: 480px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.swap-header {
+.card-header {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 .swap-settings {
@@ -102,7 +102,7 @@ body {
     font-size: 16px;
 }
 
-.swap-details {
+.row-details {
     border: 1px solid #e6e6e6;
     border-radius: 12px;
     padding: 16px;
@@ -112,7 +112,6 @@ body {
     .row {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 12px;
         color: #666;
     }
 }
@@ -122,7 +121,7 @@ body {
     background: #000;
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 16px;
     padding: 16px;
     font-size: 16px;
     font-weight: 500;
@@ -131,5 +130,66 @@ body {
 
     &:hover {
         background: #222;
+    }
+}
+
+.provider-description {
+    color: #666;
+    font-size: 12px;
+    line-height: 1.4;
+    margin-bottom: 20px;
+}
+
+.provider-card {
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid #E5E5E5;
+    transition: border-color 0.2s ease;
+
+    &:hover {
+        cursor: pointer;
+        border-color: #000;
+    }
+
+    .provider-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+
+    .provider-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .best-tag {
+        background: #4dc847;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .sol-amount {
+        display: block;
+        font-size: 18px;
+        font-weight: 500;
+        color: #1A1A1A;
+        margin-bottom: 4px;
+    }
+    
+    .usd-amount {
+        color: #666;
+        font-size: 14px;
+    }
+
+    .row-details {
+        border: none;
+        border-top: 1px solid #E5E5E5;
+        border-radius: 0;
     }
 }

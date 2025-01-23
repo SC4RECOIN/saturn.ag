@@ -1,8 +1,8 @@
 use crate::components::wallet::WalletConnect;
-use components::swap::Swap;
+use components::{providers::Providers, swap::Swap};
 use leptos::*;
 use leptos_query::provide_query_client;
-use thaw::{Grid, GridItem};
+use thaw::{Grid, GridItem, Space, SpaceGap};
 use wasi_sol::{
     core::wallet::Wallet,
     provider::leptos::{connection::ConnectionProvider, wallet::WalletProvider},
@@ -39,7 +39,10 @@ pub fn LoginPage() -> impl IntoView {
                     <WalletConnect />
                 </GridItem>
             </Grid>
-            <Swap />
+            <Space gap=SpaceGap::Size(32)>
+                <Swap />
+                <Providers />
+            </Space>
         </div>
     }
 }
