@@ -13,54 +13,58 @@ pub fn Swap() -> impl IntoView {
     let output_value = create_rw_signal("0".to_string());
 
     view! {
-        <div class="card">
-            <div class="card-header">
-                <h3>"Swap"</h3>
-                <div class="swap-settings">"Priority fee:"<span>"Market"</span></div>
+        <div class="rounded-2xl p-6 w-[480px] shadow-md border border-gray-200">
+            <div class="flex justify-between mb-2">
+                <h3 class="font-bold text-lg">"Swap"</h3>
+                <div class="flex items-center text-sm">
+                    "Priority fee:" <span class="text-green-600 ml-1 cursor-pointer">"Market"</span>
+                </div>
             </div>
             <AssetSelector mint=input_mint amount=input_value />
-            <div class="swap-arrow">"↓"</div>
+            <div class="text-center my-2 text-gray-500">"↓"</div>
             <AssetSelector mint=output_mint amount=output_value />
-            <div class="row-details">
-                <div class="row">
+            <div class="border border-gray-200 rounded-xl p-4 mt-6 text-sm">
+                <div class="flex justify-between text-gray-500">
                     <span>"Rate"</span>
                     <b>"1 USDC = 0.003683 SOL"</b>
                 </div>
-                <div class="row">
+                <div class="flex justify-between text-gray-500">
                     <span>"Slippage"</span>
                     <b>"0.1% ›"</b>
                 </div>
-                <div class="row">
+                <div class="flex justify-between text-gray-500">
                     <span>"Minimum received"</span>
                     <b>"1.839922 SOL"</b>
                 </div>
             </div>
-            <button class="connect-wallet">"Connect wallet"</button>
+            <button class="w-full bg-black hover:bg-gray-900 text-white rounded-2xl p-4 font-medium cursor-pointer mt-6">
+                "Connect wallet"
+            </button>
         </div>
     }
 }
 
 #[component]
 pub fn AssetSelector(mint: RwSignal<Pubkey>, amount: RwSignal<String>) -> impl IntoView {
-    let parser = Callback::<String, String>::new(move |v: String| {
-        v.chars()
-            .filter(|c| c.is_numeric() || *c == '.')
-            .collect::<String>()
-    });
-
     view! {
-        <div class="asset-selector">
-            <div class="token-selector">
+        <div class="bg-gray-50 rounded-xl p-4 mb-3 flex justify-between items-center">
+            <div class="flex items-center gap-2 cursor-pointer font-medium">
                 <img
                     src="https://www.okx.com/cdn/web3/currency/token/784-0xdba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC-1.png"
                     alt="Asset Icon"
-                    class="token-icon"
+                    class="w-6 h-6"
                 />
-                <span class="token-symbol">"USDC"</span>
-                <span class="dropdown-arrow">"▼"</span>
+                <span>"USDC"</span>
+                <span class="text-gray-500 text-xs">"▼"</span>
             </div>
-            <input value=amount parser class="amount-input" />
-            <div class="usd-value">"$499.95"</div>
+            <div class="flex flex-col items-end">
+                <input
+                    value=amount
+                    class="text-right border-none bg-transparent text-2xl font-medium w-[200px]"
+                    placeholder="0.0"
+                />
+                <div class="text-gray-500 text-sm">"$499.95"</div>
+            </div>
         </div>
     }
 }
