@@ -43,7 +43,7 @@ jobs:
 
       # tailwind
       - name: Install Tailwind CSS
-        run: npm install -D tailwindcss
+        run: npm install -D tailwindcss@3
 
       - name: Build Tailwind CSS
         run: npx tailwindcss -i ./input.css -o ./style/output.css
