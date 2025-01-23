@@ -27,7 +27,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4 # repo checkout
+      - uses: actions/checkout@v4
 
       # Install Rust Nightly Toolchain, with Clippy & Rustfmt
       - name: Install nightly Rust
@@ -41,10 +41,14 @@ jobs:
       - name: lint
         run: cargo clippy & cargo fmt
 
-      # Tailwind
-      - name: Build tailwind files
-        run: npm install -D tailwindcss && npm tailwindcss -i ./input.css -o ./style/output.css
+      # tailwind
+      - name: Install Tailwind CSS
+        run: npm install -D tailwindcss
 
+      - name: Build Tailwind CSS
+        run: npx tailwindcss -i ./input.css -o ./style/output.css
+
+      # trunk
       - name: Download and install Trunk binary
         run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.4/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
 
@@ -56,12 +60,10 @@ jobs:
         uses: actions/configure-pages@v4
         with:
           enablement: true
-          # token:
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          # Upload dist dir
           path: "./dist"
 
       - name: Deploy to GitHub Pages 🚀
