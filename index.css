@@ -1,3 +1,5 @@
+/* Base Styles
+---------------------------------------- */
 body {
     font-family: 'Arial', sans-serif;
     display: flex;
@@ -10,18 +12,8 @@ body {
     min-width: min(800px, 100vw);
 }
 
-.wallet-button {
-    flex-direction: column;
-    width: 100px;
-    height: 100px;
-    line-height: 10px;
-
-    img {
-        width: 48px;
-        height: 48px;
-    }
-}
-
+/* Common Components
+---------------------------------------- */
 .card {
     border-radius: 16px;
     padding: 24px;
@@ -35,6 +27,46 @@ body {
     margin-bottom: 0.5rem;
 }
 
+.icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+}
+
+/* Wallet Components
+---------------------------------------- */
+.wallet-button {
+    flex-direction: column;
+    width: 100px;
+    height: 100px;
+    line-height: 10px;
+
+    img {
+        width: 48px;
+        height: 48px;
+    }
+}
+
+.connect-wallet {
+    width: 100%;
+    background: #000;
+    color: white;
+    border: none;
+    border-radius: 16px;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 24px;
+
+    &:hover {
+        background: #222;
+    }
+}
+
+/* Swap Interface
+---------------------------------------- */
 .swap-settings {
     display: flex;
     align-items: center;
@@ -43,17 +75,11 @@ body {
     span {
         color: #00b15d;
         margin-left: 5px;
-    }
-    span:hover {
-        cursor: pointer;
-    }
-}
 
-.icon-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 4px;
+        &:hover {
+            cursor: pointer;
+        }
+    }
 }
 
 .asset-selector {
@@ -102,37 +128,8 @@ body {
     font-size: 16px;
 }
 
-.row-details {
-    border: 1px solid #e6e6e6;
-    border-radius: 12px;
-    padding: 16px;
-    margin-top: 24px;
-    font-size: 14px;
-
-    .row {
-        display: flex;
-        justify-content: space-between;
-        color: #666;
-    }
-}
-
-.connect-wallet {
-    width: 100%;
-    background: #000;
-    color: white;
-    border: none;
-    border-radius: 16px;
-    padding: 16px;
-    font-size: 16px;
-    font-weight: 500;
-    cursor: pointer;
-    margin-top: 24px;
-
-    &:hover {
-        background: #222;
-    }
-}
-
+/* Provider Components
+---------------------------------------- */
 .provider-description {
     color: #666;
     font-size: 12px;
@@ -150,46 +147,64 @@ body {
         cursor: pointer;
         border-color: #000;
     }
+}
 
-    .provider-header {
+.provider-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.provider-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.best-tag {
+    background: #4dc847;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.sol-amount {
+    display: block;
+    font-size: 18px;
+    font-weight: 500;
+    color: #1A1A1A;
+    margin-bottom: 4px;
+}
+
+.usd-amount {
+    color: #666;
+    font-size: 14px;
+}
+
+/* Details Components
+---------------------------------------- */
+.row-details {
+    border: 1px solid #e6e6e6;
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 24px;
+    font-size: 14px;
+
+    .row {
         display: flex;
         justify-content: space-between;
-        align-items: center;
-        margin-bottom: 16px;
-    }
-
-    .provider-info {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-weight: bold;
-        font-size: 14px;
-    }
-
-    .best-tag {
-        background: #4dc847;
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-size: 12px;
-        font-weight: 500;
-    }
-
-    .sol-amount {
-        display: block;
-        font-size: 18px;
-        font-weight: 500;
-        color: #1A1A1A;
-        margin-bottom: 4px;
-    }
-    
-    .usd-amount {
         color: #666;
-        font-size: 14px;
     }
+}
 
-    .row-details {
-        border: none;
-        border-top: 1px solid #E5E5E5;
-        border-radius: 0;
-    }
+/* Provider Card Overrides
+---------------------------------------- */
+.provider-card .row-details {
+    border: none;
+    border-top: 1px solid #E5E5E5;
+    border-radius: 0;
 }
