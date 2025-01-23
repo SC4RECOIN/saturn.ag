@@ -16,7 +16,7 @@ pub fn Providers() -> impl IntoView {
                         <img src="images/okx.webp" alt="OKX" width="20px" height="20px" />
                         <div>OKX DEX Aggregator</div>
                     </div>
-                    <span class="best-tag">Best</span>
+                    <span class="best-tag bg-green-500">Best</span>
                 </div>
                 <span class="sol-amount">0.01952016 SOL</span>
                 <span class="usd-amount">"≈ $5.01 (excluding priority fee)"</span>

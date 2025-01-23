@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* Base Styles
 ---------------------------------------- */
 body {
@@ -165,7 +169,6 @@ body {
 }
 
 .best-tag {
-    background: #4dc847;
     padding: 4px 8px;
     border-radius: 4px;
     font-size: 12px;
@@ -207,4 +210,8 @@ body {
     border: none;
     border-top: 1px solid #E5E5E5;
     border-radius: 0;
+}
+
+.cat {
+    font-size: 100px;
 }
