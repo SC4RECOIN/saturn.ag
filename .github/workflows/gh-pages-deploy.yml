@@ -29,7 +29,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Install Rust Nightly Toolchain, with Clippy & Rustfmt
+      # rust
       - name: Install nightly Rust
         uses: dtolnay/rust-toolchain@nightly
         with:
@@ -55,7 +55,7 @@ jobs:
       - name: Build with Trunk
         run: ./trunk build --release --public-url "${GITHUB_REPOSITORY#*/}"
 
-      # Deploy with Github Static Pages
+      # deploy static pages
       - name: Setup Pages
         uses: actions/configure-pages@v4
         with:

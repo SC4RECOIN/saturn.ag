@@ -1,5 +1,4 @@
 use leptos::*;
-use thaw::{Alert, AlertVariant, Button, ButtonVariant, Image, Modal, Space, SpaceJustify};
 use wasi_sol::{
     core::{
         traits::WalletAdapter, wallet::{BaseWalletAdapter, Wallet}
@@ -77,96 +76,106 @@ pub fn WalletConnect() -> impl IntoView {
         <div>
             {move || {
                 if !connected.get() {
-                    view! { <Button on_click=move |_| show.set(true)>"Connect Wallet"</Button> }
+                    view! { <button on:click=move |_| show.set(true)>"Connect Wallet"</button> }
                 } else {
                     view! {
-                        <Button on:click=disconnect_wallet>
-                            <Image
-                                width="32px"
-                                height="32px"
-                                src=if phantom_wallet_adapter.get().public_key().is_some() {
-                                    phantom_wallet_adapter.get().icon()
-                                } else if solflare_wallet_adapter.get().public_key().is_some() {
-                                    solflare_wallet_adapter.get().icon()
-                                } else if backpack_wallet_adapter.get().public_key().is_some() {
-                                    backpack_wallet_adapter.get().icon()
-                                } else {
-                                    "".to_string()
-                                }
-                                alt="Wallet Icon"
-                            />
-                            "Disconnect"
-                        </Button>
+                        <button
+                            on:click=disconnect_wallet
+                            class="bg-black text-white px-2 rounded-lg"
+                        >
+                            <div class="flex items-center gap-2">
+                                <img
+                                    class="w-8 h-8"
+                                    src=if phantom_wallet_adapter.get().public_key().is_some() {
+                                        phantom_wallet_adapter.get().icon()
+                                    } else if solflare_wallet_adapter.get().public_key().is_some() {
+                                        solflare_wallet_adapter.get().icon()
+                                    } else if backpack_wallet_adapter.get().public_key().is_some() {
+                                        backpack_wallet_adapter.get().icon()
+                                    } else {
+                                        "".to_string()
+                                    }
+                                    alt="Wallet Icon"
+                                />
+                                "Disconnect"
+                            </div>
+                        </button>
                     }
                 }
-            }} <Modal title="Connect Wallet" show width="400px">
-                <Space vertical=true>
-                    {move || {
-                        view! {
-                            <Space justify=SpaceJustify::SpaceAround>
-                                <Button
-                                    variant=ButtonVariant::Outlined
-                                    on:click=move |_| connect_wallet(
-                                        phantom_wallet_adapter,
-                                        set_phantom_wallet_adapter,
-                                    )
-                                    class="wallet-button"
-                                >
-                                    <Image
-                                        src=phantom_wallet_adapter.get().icon()
-                                        alt="Phantom Wallet"
-                                    />
-                                    <p>"Phantom"</p>
-                                </Button>
-                                <Button
-                                    on:click=move |_| connect_wallet(
-                                        solflare_wallet_adapter,
-                                        set_solflare_wallet_adapter,
-                                    )
-                                    variant=ButtonVariant::Outlined
-                                    class="wallet-button"
-                                >
-                                    <Image
-                                        src=solflare_wallet_adapter.get().icon()
-                                        alt="Solflare Wallet"
-                                    />
-                                    <p>"Solflare"</p>
-                                </Button>
-                                <Button
-                                    on:click=move |_| connect_wallet(
-                                        backpack_wallet_adapter,
-                                        set_backpack_wallet_adapter,
-                                    )
-                                    variant=ButtonVariant::Outlined
-                                    class="wallet-button"
-                                >
-                                    <Image
-                                        src=backpack_wallet_adapter.get().icon()
-                                        alt="Backpack Wallet"
-                                    />
-                                    <p>"Backpack"</p>
-                                </Button>
-                            </Space>
-                        }
-                    }}
-                    {move || {
-                        if !error.get().is_empty() {
-                            Some(
-                                view! {
-                                    <Alert
-                                        variant=AlertVariant::Error
-                                        title="Error connecting wallet"
-                                    >
-                                        {error.get()}
-                                    </Alert>
-                                },
-                            )
-                        } else {
-                            None
-                        }
-                    }}
-                </Space>
-            </Modal>
+            }}
+            {move || {
+                if show.get() {
+                    view! {
+                        <div class="modal fixed inset-0 bg-black/50 flex justify-center items-center">
+                            <div class="bg-white p-5 rounded-lg w-[400px]">
+                                <h2 class="font-bold text-lg mb-4">"Connect Wallet"</h2>
+                                <div class="flex flex-col gap-4">
+                                    <div class="flex justify-around gap-2">
+                                        <button
+                                            class="border border-gray-300 p-2 rounded hover:border-black cursor-pointer transition-colors w-32 flex flex-col items-center justify-center"
+                                            on:click=move |_| connect_wallet(
+                                                phantom_wallet_adapter,
+                                                set_phantom_wallet_adapter,
+                                            )
+                                        >
+                                            <img
+                                                src=phantom_wallet_adapter.get().icon()
+                                                alt="Phantom Wallet"
+                                                class="w-20 h-20"
+                                            />
+                                            <p>"Phantom"</p>
+                                        </button>
+                                        <button
+                                            class="border border-gray-300 p-2 rounded hover:border-black cursor-pointer transition-colors w-32 flex flex-col items-center justify-center"
+                                            on:click=move |_| connect_wallet(
+                                                solflare_wallet_adapter,
+                                                set_solflare_wallet_adapter,
+                                            )
+                                        >
+                                            <img
+                                                src=solflare_wallet_adapter.get().icon()
+                                                alt="Solflare Wallet"
+                                                class="w-20 h-20"
+                                            />
+                                            <p>"Solflare"</p>
+                                        </button>
+                                        <button
+                                            class="border border-gray-300 p-2 rounded hover:border-black cursor-pointer transition-colors w-32 flex flex-col items-center justify-center"
+                                            on:click=move |_| connect_wallet(
+                                                backpack_wallet_adapter,
+                                                set_backpack_wallet_adapter,
+                                            )
+                                        >
+                                            <img
+                                                src=backpack_wallet_adapter.get().icon()
+                                                alt="Backpack Wallet"
+                                                class="w-20 h-20"
+                                            />
+                                            <p>"Backpack"</p>
+                                        </button>
+                                    </div>
+                                    {move || {
+                                        if !error.get().is_empty() {
+                                            Some(
+                                                view! {
+                                                    <div class="alert-error bg-red-50 border border-red-400 p-3 rounded">
+                                                        <h4>"Error connecting wallet"</h4>
+                                                        <p>{error.get()}</p>
+                                                    </div>
+                                                },
+                                            )
+                                        } else {
+                                            None
+                                        }
+                                    }}
+                                </div>
+                            </div>
+                        </div>
+                    }
+                } else {
+                    view! { <div></div> }
+                }
+            }}
         </div>
     }
 }
