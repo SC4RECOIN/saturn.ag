@@ -79,7 +79,7 @@ pub fn WalletConnect() -> impl IntoView {
                     view! {
                         <button
                             on:click=move |_| show.set(true)
-                            class="bg-black text-white rounded-xl py-1 px-2"
+                            class="bg-black text-white rounded-xl py-1 px-3 hover:bg-gray-800"
                         >
                             "Connect Wallet"
                         </button>
@@ -88,7 +88,7 @@ pub fn WalletConnect() -> impl IntoView {
                     view! {
                         <button
                             on:click=disconnect_wallet
-                            class="bg-black text-white rounded-xl py-1 px-2"
+                            class="bg-black text-white rounded-xl py-1 px-3 hover:bg-gray-800"
                         >
                             <div class="flex items-center gap-2">
                                 <img
@@ -114,7 +114,13 @@ pub fn WalletConnect() -> impl IntoView {
                 if show.get() {
                     view! {
                         <div class="modal fixed inset-0 bg-black/50 flex justify-center items-center">
-                            <div class="bg-white p-5 rounded-lg w-[400px]">
+                            <div class="bg-white p-5 rounded-lg w-[400px] relative">
+                                <button
+                                    class="absolute top-2 right-5 text-gray-500 hover:text-black"
+                                    on:click=move |_| show.set(false)
+                                >
+                                    <span class="text-3xl">"×"</span>
+                                </button>
                                 <h2 class="font-bold text-lg mb-4">"Connect Wallet"</h2>
                                 <div class="flex flex-col gap-4">
                                     <div class="flex justify-around gap-2">
