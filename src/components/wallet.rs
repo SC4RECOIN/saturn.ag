@@ -76,12 +76,19 @@ pub fn WalletConnect() -> impl IntoView {
         <div>
             {move || {
                 if !connected.get() {
-                    view! { <button on:click=move |_| show.set(true)>"Connect Wallet"</button> }
+                    view! {
+                        <button
+                            on:click=move |_| show.set(true)
+                            class="bg-black text-white rounded-xl py-1 px-2"
+                        >
+                            "Connect Wallet"
+                        </button>
+                    }
                 } else {
                     view! {
                         <button
                             on:click=disconnect_wallet
-                            class="bg-black text-white px-2 rounded-lg"
+                            class="bg-black text-white rounded-xl py-1 px-2"
                         >
                             <div class="flex items-center gap-2">
                                 <img

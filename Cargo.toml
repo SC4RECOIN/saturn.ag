@@ -9,5 +9,4 @@ console_error_panic_hook = "0.1.7"
 log = "0.4.21"
 wasi-sol = { version = "0.0.7", features = ["lep"] }
 wasm-logger = "0.2.0"
-thaw = { version = "0.3.4", features = ["csr"] }
 leptos_query = "0.5.3"

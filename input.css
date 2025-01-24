@@ -7,5 +7,5 @@ body {
 }
 
 .content {
-    @apply min-w-[min(800px,100vw)];
+    @apply min-w-[min(1200px,100vw)];
 }
