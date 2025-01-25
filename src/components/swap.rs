@@ -13,7 +13,7 @@ pub fn Swap() -> impl IntoView {
     let output_value = create_rw_signal("0".to_string());
 
     view! {
-        <div class="rounded-2xl p-6 w-[480px] shadow-md border border-gray-200">
+        <div class="rounded-2xl p-6 w-full shadow-md border border-gray-200">
             <div class="flex justify-between mb-2">
                 <h3 class="font-bold text-lg">"Swap"</h3>
                 <div class="flex items-center text-sm">

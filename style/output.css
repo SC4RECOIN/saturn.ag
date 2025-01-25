@@ -570,24 +570,12 @@ video {
   inset: 0px;
 }
 
-.right-2 {
-  right: 0.5rem;
+.right-5 {
+  right: 1.25rem;
 }
 
 .top-2 {
   top: 0.5rem;
-}
-
-.left-2 {
-  left: 0.5rem;
-}
-
-.right-6 {
-  right: 1.5rem;
-}
-
-.right-5 {
-  right: 1.25rem;
 }
 
 .my-2 {
@@ -597,6 +585,10 @@ video {
 
 .mb-1 {
   margin-bottom: 0.25rem;
+}
+
+.mb-10 {
+  margin-bottom: 2.5rem;
 }
 
 .mb-2 {
@@ -621,10 +613,6 @@ video {
 
 .mt-6 {
   margin-top: 1.5rem;
-}
-
-.mb-10 {
-  margin-bottom: 2.5rem;
 }
 
 .block {
@@ -679,20 +667,16 @@ video {
   width: 400px;
 }
 
-.w-\[480px\] {
-  width: 480px;
-}
-
 .w-full {
   width: 100%;
 }
 
-.cursor-pointer {
-  cursor: pointer;
+.min-w-\[min\(1200px\2c 100vw\)\] {
+  min-width: min(1200px,100vw);
 }
 
-.flex-row-reverse {
-  flex-direction: row-reverse;
+.cursor-pointer {
+  cursor: pointer;
 }
 
 .flex-col {
@@ -827,28 +811,24 @@ video {
   padding: 1.5rem;
 }
 
-.p-1 {
-  padding: 0.25rem;
-}
-
 .px-2 {
   padding-left: 0.5rem;
   padding-right: 0.5rem;
 }
 
-.py-1 {
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
-}
-
-.py-2 {
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
-}
-
 .px-3 {
   padding-left: 0.75rem;
   padding-right: 0.75rem;
+}
+
+.px-5 {
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+.py-1 {
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
 }
 
 .pt-4 {
@@ -866,6 +846,11 @@ video {
 .text-2xl {
   font-size: 1.5rem;
   line-height: 2rem;
+}
+
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
 }
 
 .text-lg {
@@ -886,16 +871,6 @@ video {
 .text-xs {
   font-size: 0.75rem;
   line-height: 1rem;
-}
-
-.text-4xl {
-  font-size: 2.25rem;
-  line-height: 2.5rem;
-}
-
-.text-3xl {
-  font-size: 1.875rem;
-  line-height: 2.25rem;
 }
 
 .font-bold {
@@ -939,15 +914,10 @@ video {
 }
 
 body {
-  margin: 0.625rem;
   display: flex;
   min-height: 100vh;
   justify-content: center;
   font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-}
-
-.content {
-  min-width: min(1200px,100vw);
 }
 
 .hover\:border-black:hover {
@@ -955,17 +925,23 @@ body {
   border-color: rgb(0 0 0 / var(--tw-border-opacity, 1));
 }
 
-.hover\:bg-gray-900:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(17 24 39 / var(--tw-bg-opacity, 1));
-}
-
 .hover\:bg-gray-800:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(31 41 55 / var(--tw-bg-opacity, 1));
 }
 
+.hover\:bg-gray-900:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(17 24 39 / var(--tw-bg-opacity, 1));
+}
+
 .hover\:text-black:hover {
   --tw-text-opacity: 1;
   color: rgb(0 0 0 / var(--tw-text-opacity, 1));
+}
+
+@media (min-width: 1024px) {
+  .lg\:flex-row {
+    flex-direction: row;
+  }
 }

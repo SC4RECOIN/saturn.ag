@@ -88,7 +88,7 @@ pub fn WalletConnect() -> impl IntoView {
                     view! {
                         <button
                             on:click=disconnect_wallet
-                            class="bg-black text-white rounded-xl py-1 px-3 hover:bg-gray-800"
+                            class="bg-black text-white rounded-xl py-1 px-3"
                         >
                             <div class="flex items-center gap-2">
                                 <img

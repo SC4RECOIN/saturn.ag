@@ -32,14 +32,14 @@ pub fn App() -> impl IntoView {
 #[component]
 pub fn LoginPage() -> impl IntoView {
     view! {
-        <div class="content">
+        <div class="min-w-[min(1200px,100vw)] p-5">
             <div class="flex justify-between mb-10">
                 <div class="text-xl font-bold">"Saturn 🪐"</div>
                 <div>
                     <WalletConnect />
                 </div>
             </div>
-            <div class="flex gap-8 justify-center">
+            <div class="flex flex-col lg:flex-row gap-8 justify-center">
                 <Swap />
                 <Providers />
             </div>

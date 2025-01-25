@@ -3,9 +3,5 @@
 @tailwind utilities;
 
 body {
-    @apply flex justify-center min-h-screen m-2.5 font-sans;
-}
-
-.content {
-    @apply min-w-[min(1200px,100vw)];
+    @apply flex justify-center min-h-screen font-sans;
 }
