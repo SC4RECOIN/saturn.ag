@@ -75,7 +75,7 @@ pub fn WalletConnect(large: bool) -> impl IntoView {
     view! {
         <div>
             <div class=move || {
-                let classes = "bg-black text-white rounded-2xl w-full px-3 hover:bg-gray-800 text-center";
+                let classes = "bg-black text-white rounded-3xl w-full px-3 hover:bg-gray-800 text-center";
                 if large {
                     format!("{} py-4 text-lg w-full", classes)
                 } else {

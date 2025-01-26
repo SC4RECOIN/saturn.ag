@@ -25,18 +25,18 @@ pub fn Swap() -> impl IntoView {
             <AssetSelector mint=input_mint amount=input_value />
             <div class="text-center my-2 text-gray-500">"↓"</div>
             <AssetSelector mint=output_mint amount=output_value />
-            <div class="border border-gray-200 rounded-xl p-4 my-6 text-sm">
-                <div class="flex justify-between text-gray-500">
-                    <span>"Rate"</span>
-                    <b>"1 USDC = 0.003683 SOL"</b>
+            <div class="border border-gray-200 rounded-xl p-4 my-6 text-sm flex flex-col gap-2">
+                <div class="flex justify-between">
+                    <span class="text-gray-500">"Rate"</span>
+                    <span>"1 USDC = 0.003683 SOL"</span>
                 </div>
-                <div class="flex justify-between text-gray-500">
-                    <span>"Slippage"</span>
-                    <b>"0.1% ›"</b>
+                <div class="flex justify-between">
+                    <span class="text-gray-500">"Slippage"</span>
+                    <span>"0.1% ›"</span>
                 </div>
-                <div class="flex justify-between text-gray-500">
-                    <span>"Minimum received"</span>
-                    <b>"1.839922 SOL"</b>
+                <div class="flex justify-between">
+                    <span class="text-gray-500">"Minimum received"</span>
+                    <span>"1.839922 SOL"</span>
                 </div>
             </div>
             {move || { if true { Some(view! { <WalletConnect large=true /> }) } else { None } }}

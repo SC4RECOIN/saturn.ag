@@ -19,11 +19,11 @@ pub fn Providers() -> impl IntoView {
                     <span class="px-2 py-1 rounded text-xs font-medium bg-green-500">"Best"</span>
                 </div>
                 <span class="block text-lg font-medium text-gray-900 mb-1">"0.01952016 SOL"</span>
-                <span class="text-gray-500 text-sm">"≈ $5.01 (excluding priority fee)"</span>
+                <span class="text-gray-500 text-sm">"≈ $5.01"</span>
                 <div class="mt-6 pt-4 border-t border-gray-200">
-                    <div class="flex justify-between text-gray-500 text-sm">
-                        <span>"Est network fee"</span>
-                        <b>"$0.0012"</b>
+                    <div class="flex justify-between text-sm">
+                        <span class="text-gray-500">"Est network fee"</span>
+                        <span>"$0.0012"</span>
                     </div>
                 </div>
             </div>
