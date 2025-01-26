@@ -32,7 +32,7 @@ pub fn App() -> impl IntoView {
 #[component]
 pub fn LoginPage() -> impl IntoView {
     view! {
-        <div class="min-w-[min(1200px,100vw)] p-5">
+        <div class="min-w-[min(1200px,100vw)] px-2 py-4">
             <div class="flex justify-between mb-10">
                 <div class="text-xl font-bold">"Saturn 🪐"</div>
                 <div>
