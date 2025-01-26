@@ -23,27 +23,20 @@ pub fn App() -> impl IntoView {
     view! {
         <ConnectionProvider endpoint=endpoint>
             <WalletProvider wallets=wallets>
-                <LoginPage />
+                <div class="min-w-[min(1200px,100vw)] px-2 py-4">
+                    <div class="flex justify-between mb-10 px-4">
+                        <div class="text-xl font-bold">"Saturn 🪐"</div>
+                        <div>
+                            <WalletConnect />
+                        </div>
+                    </div>
+                    <div class="flex flex-col lg:flex-row gap-8 justify-center">
+                        <Swap />
+                        <Providers />
+                    </div>
+                </div>
             </WalletProvider>
         </ConnectionProvider>
-    }
-}
-
-#[component]
-pub fn LoginPage() -> impl IntoView {
-    view! {
-        <div class="min-w-[min(1200px,100vw)] px-2 py-4">
-            <div class="flex justify-between mb-10 px-4">
-                <div class="text-xl font-bold">"Saturn 🪐"</div>
-                <div>
-                    <WalletConnect large=false />
-                </div>
-            </div>
-            <div class="flex flex-col lg:flex-row gap-8 justify-center">
-                <Swap />
-                <Providers />
-            </div>
-        </div>
     }
 }
 

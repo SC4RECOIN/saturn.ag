@@ -7,7 +7,7 @@ use wasi_sol::{
 };
 
 #[component]
-pub fn WalletConnect(large: bool) -> impl IntoView {
+pub fn WalletConnect(#[prop(optional, default = false)] large: bool) -> impl IntoView {
     let (phantom_wallet_adapter, set_phantom_wallet_adapter) = create_signal(use_wallet(Wallet::Phantom));
     let (solflare_wallet_adapter, set_solflare_wallet_adapter) = create_signal( use_wallet(Wallet::Solflare));
     let (backpack_wallet_adapter, set_backpack_wallet_adapter) = create_signal(use_wallet(Wallet::Backpack));
@@ -74,17 +74,23 @@ pub fn WalletConnect(large: bool) -> impl IntoView {
 
     view! {
         <div>
-            <div class=move || {
-                let classes = "bg-black text-white rounded-3xl w-full px-3 hover:bg-gray-800 text-center";
-                if large {
-                    format!("{} py-4 text-lg w-full", classes)
-                } else {
-                    format!("{} py-1", classes)
-                }
-            }>
+            <div class="bg-black text-white rounded-3xl w-full hover:bg-gray-800 text-center py-1">
                 {move || {
                     if !connected.get() {
-                        view! { <button on:click=move |_| show.set(true)>"Connect Wallet"</button> }
+                        view! {
+                            <button
+                                class=move || {
+                                    if large {
+                                        "w-full h-full py-4 text-lg"
+                                    } else {
+                                        "w-full h-full px-4 py-1"
+                                    }
+                                }
+                                on:click=move |_| show.set(true)
+                            >
+                                "Connect Wallet"
+                            </button>
+                        }
                     } else {
                         view! {
                             <button on:click=disconnect_wallet>

@@ -24,7 +24,7 @@ pub fn Swap() -> impl IntoView {
             </div>
             <AssetSelector mint=input_mint amount=input_value />
             <div class="text-center my-2 text-gray-500">"↓"</div>
-            <AssetSelector mint=output_mint amount=output_value />
+            <AssetSelector mint=output_mint amount=output_value disabled=true />
             <div class="border border-gray-200 rounded-xl p-4 my-6 text-sm flex flex-col gap-2">
                 <div class="flex justify-between">
                     <span class="text-gray-500">"Rate"</span>
@@ -45,7 +45,11 @@ pub fn Swap() -> impl IntoView {
 }
 
 #[component]
-pub fn AssetSelector(mint: RwSignal<Pubkey>, amount: RwSignal<String>) -> impl IntoView {
+pub fn AssetSelector(
+    mint: RwSignal<Pubkey>,
+    amount: RwSignal<String>,
+    #[prop(optional, default = false)] disabled: bool,
+) -> impl IntoView {
     view! {
         <div class="bg-gray-50 rounded-xl p-4 mb-3 flex justify-between items-center max-w-1/2">
             <div class="flex items-center gap-2 cursor-pointer font-medium">
@@ -66,6 +70,7 @@ pub fn AssetSelector(mint: RwSignal<Pubkey>, amount: RwSignal<String>) -> impl I
                     }
                     class="w-full text-right border-none bg-transparent text-2xl font-medium focus:outline-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     placeholder="0.0"
+                    disabled=disabled
                 />
                 <div class="text-gray-500 text-sm">"$499.95"</div>
             </div>
