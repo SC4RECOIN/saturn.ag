@@ -7,7 +7,7 @@ use wasi_sol::{
 };
 
 #[component]
-pub fn WalletConnect() -> impl IntoView {
+pub fn WalletConnect(large: bool) -> impl IntoView {
     let (phantom_wallet_adapter, set_phantom_wallet_adapter) = create_signal(use_wallet(Wallet::Phantom));
     let (solflare_wallet_adapter, set_solflare_wallet_adapter) = create_signal( use_wallet(Wallet::Solflare));
     let (backpack_wallet_adapter, set_backpack_wallet_adapter) = create_signal(use_wallet(Wallet::Backpack));
@@ -74,42 +74,49 @@ pub fn WalletConnect() -> impl IntoView {
 
     view! {
         <div>
-            {move || {
-                if !connected.get() {
-                    view! {
-                        <button
-                            on:click=move |_| show.set(true)
-                            class="bg-black text-white rounded-xl py-1 px-3 hover:bg-gray-800"
-                        >
-                            "Connect Wallet"
-                        </button>
-                    }
+            <div class=move || {
+                let classes = "bg-black text-white rounded-2xl w-full px-3 hover:bg-gray-800 text-center";
+                if large {
+                    format!("{} py-4 text-lg w-full", classes)
                 } else {
-                    view! {
-                        <button
-                            on:click=disconnect_wallet
-                            class="bg-black text-white rounded-xl py-1 px-3"
-                        >
-                            <div class="flex items-center gap-2">
-                                <img
-                                    class="w-8 h-8"
-                                    src=if phantom_wallet_adapter.get().public_key().is_some() {
-                                        phantom_wallet_adapter.get().icon()
-                                    } else if solflare_wallet_adapter.get().public_key().is_some() {
-                                        solflare_wallet_adapter.get().icon()
-                                    } else if backpack_wallet_adapter.get().public_key().is_some() {
-                                        backpack_wallet_adapter.get().icon()
-                                    } else {
-                                        "".to_string()
-                                    }
-                                    alt="Wallet Icon"
-                                />
-                                "Disconnect"
-                            </div>
-                        </button>
-                    }
+                    format!("{} py-1", classes)
                 }
-            }}
+            }>
+                {move || {
+                    if !connected.get() {
+                        view! { <button on:click=move |_| show.set(true)>"Connect Wallet"</button> }
+                    } else {
+                        view! {
+                            <button on:click=disconnect_wallet>
+                                <div class="flex items-center gap-2">
+                                    <img
+                                        class="w-8 h-8"
+                                        src=if phantom_wallet_adapter.get().public_key().is_some() {
+                                            phantom_wallet_adapter.get().icon()
+                                        } else if solflare_wallet_adapter
+                                            .get()
+                                            .public_key()
+                                            .is_some()
+                                        {
+                                            solflare_wallet_adapter.get().icon()
+                                        } else if backpack_wallet_adapter
+                                            .get()
+                                            .public_key()
+                                            .is_some()
+                                        {
+                                            backpack_wallet_adapter.get().icon()
+                                        } else {
+                                            "".to_string()
+                                        }
+                                        alt="Wallet Icon"
+                                    />
+                                    "Disconnect"
+                                </div>
+                            </button>
+                        }
+                    }
+                }}
+            </div>
             {move || {
                 if show.get() {
                     view! {

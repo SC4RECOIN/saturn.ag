@@ -36,7 +36,7 @@ pub fn LoginPage() -> impl IntoView {
             <div class="flex justify-between mb-10">
                 <div class="text-xl font-bold">"Saturn 🪐"</div>
                 <div>
-                    <WalletConnect />
+                    <WalletConnect large=false />
                 </div>
             </div>
             <div class="flex flex-col lg:flex-row gap-8 justify-center">

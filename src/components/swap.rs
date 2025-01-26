@@ -2,6 +2,8 @@ use leptos::*;
 use std::str::FromStr;
 use wasi_sol::pubkey::Pubkey;
 
+use crate::components::wallet::WalletConnect;
+
 #[component]
 pub fn Swap() -> impl IntoView {
     let input_mint =
@@ -9,8 +11,8 @@ pub fn Swap() -> impl IntoView {
     let output_mint =
         create_rw_signal(Pubkey::from_str("So11111111111111111111111111111111111111112").unwrap());
 
-    let input_value = create_rw_signal("0".to_string());
-    let output_value = create_rw_signal("0".to_string());
+    let input_value = create_rw_signal("".to_string());
+    let output_value = create_rw_signal("".to_string());
 
     view! {
         <div class="rounded-2xl p-6 w-full shadow-md border border-gray-200">
@@ -23,7 +25,7 @@ pub fn Swap() -> impl IntoView {
             <AssetSelector mint=input_mint amount=input_value />
             <div class="text-center my-2 text-gray-500">"↓"</div>
             <AssetSelector mint=output_mint amount=output_value />
-            <div class="border border-gray-200 rounded-xl p-4 mt-6 text-sm">
+            <div class="border border-gray-200 rounded-xl p-4 my-6 text-sm">
                 <div class="flex justify-between text-gray-500">
                     <span>"Rate"</span>
                     <b>"1 USDC = 0.003683 SOL"</b>
@@ -37,9 +39,7 @@ pub fn Swap() -> impl IntoView {
                     <b>"1.839922 SOL"</b>
                 </div>
             </div>
-            <button class="w-full bg-black hover:bg-gray-900 text-white rounded-2xl p-4 font-medium cursor-pointer mt-6">
-                "Connect wallet"
-            </button>
+            {move || { if true { Some(view! { <WalletConnect large=true /> }) } else { None } }}
         </div>
     }
 }
@@ -59,8 +59,12 @@ pub fn AssetSelector(mint: RwSignal<Pubkey>, amount: RwSignal<String>) -> impl I
             </div>
             <div class="flex flex-col items-end">
                 <input
+                    type="number"
                     value=amount
-                    class="text-right border-none bg-transparent text-2xl font-medium w-[200px]"
+                    on:change=move |e| {
+                        amount.set(event_target_value(&e));
+                    }
+                    class="text-right border-none bg-transparent text-2xl font-medium focus:outline-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     placeholder="0.0"
                 />
                 <div class="text-gray-500 text-sm">"$499.95"</div>
