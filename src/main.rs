@@ -3,12 +3,17 @@ use components::connection::ConnectionProvider;
 use components::wallet::WalletProvider;
 use components::{providers::Providers, swap::Swap};
 use leptos::prelude::*;
+use reactive_stores::Store;
+use state::GlobalState;
 use wasi_sol::core::wallet::Wallet;
 
 pub mod components;
+pub mod state;
 
 #[component]
 pub fn App() -> impl IntoView {
+    provide_context(Store::new(GlobalState::default()));
+
     let endpoint = "https://api.mainnet-beta.solana.com";
     let wallets = vec![
         Wallet::Phantom.into(),

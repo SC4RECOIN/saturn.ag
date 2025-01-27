@@ -1,8 +1,9 @@
 use leptos::{ context::Provider, prelude::*, task::spawn_local};
+use reactive_stores::Store;
 use wasi_sol::core::{
         traits::WalletAdapter, wallet::{BaseWalletAdapter, Wallet}
     };
-use crate::components::local_storage::use_local_storage;
+use crate::{components::local_storage::use_local_storage, state::{GlobalState, GlobalStateStoreFields}};
 
 #[component]
 pub fn WalletConnect(#[prop(optional, default = false)] large: bool) -> impl IntoView {
@@ -10,7 +11,8 @@ pub fn WalletConnect(#[prop(optional, default = false)] large: bool) -> impl Int
     let (solflare_wallet_adapter, set_solflare_wallet_adapter) = signal(use_wallet(Wallet::Solflare));
     let (backpack_wallet_adapter, set_backpack_wallet_adapter) = signal(use_wallet(Wallet::Backpack));
 
-    let (connected, set_connected) = signal(false);
+    let state = expect_context::<Store<GlobalState>>();
+    let wallet_connected = state.wallet_connected();
     let (error, set_error) = signal(String::default());
     let show = RwSignal::new(false);
 
@@ -24,7 +26,7 @@ pub fn WalletConnect(#[prop(optional, default = false)] large: bool) -> impl Int
                         set_wallet_adapter.set(wallet_info);
                         show.set(false);
                     }
-                    set_connected.set(confirmed);
+                    wallet_connected.set(confirmed);
                 }
                 Err(err) => {
                     log::error!("Failed to connect wallet: {}", err);
@@ -45,7 +47,7 @@ pub fn WalletConnect(#[prop(optional, default = false)] large: bool) -> impl Int
                     if confirmed {
                         set_phantom_wallet_adapter.set(phantom_wallet_info);
                     }
-                    set_connected.set(!confirmed);
+                    wallet_connected.set(!confirmed);
                 }
                 Err(_err) => {}
             }
@@ -54,7 +56,7 @@ pub fn WalletConnect(#[prop(optional, default = false)] large: bool) -> impl Int
                     if confirmed {
                         set_solflare_wallet_adapter.set(solflare_wallet_info);
                     }
-                    set_connected.set(!confirmed);
+                    wallet_connected.set(!confirmed);
                 }
                 Err(_err) => {}
             }
@@ -63,7 +65,7 @@ pub fn WalletConnect(#[prop(optional, default = false)] large: bool) -> impl Int
                     if confirmed {
                         set_backpack_wallet_adapter.set(backpack_wallet_info);
                     }
-                    set_connected.set(!confirmed);
+                    wallet_connected.set(!confirmed);
                 }
                 Err(_err) => {}
             }
@@ -74,7 +76,7 @@ pub fn WalletConnect(#[prop(optional, default = false)] large: bool) -> impl Int
         <div>
             <div class="bg-black text-white rounded-3xl w-full hover:bg-gray-800 text-center py-1">
                 {move || {
-                    if !connected.get() {
+                    if !wallet_connected.get() {
                         Some(
                             view! {
                                 <button
@@ -96,7 +98,7 @@ pub fn WalletConnect(#[prop(optional, default = false)] large: bool) -> impl Int
                     }
                 }}
                 {move || {
-                    if connected.get() {
+                    if wallet_connected.get() {
                         Some(
                             view! {
                                 <button on:click=disconnect_wallet>

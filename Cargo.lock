@@ -2958,6 +2958,7 @@ dependencies = [
  "gloo-storage",
  "leptos",
  "log",
+ "reactive_stores",
  "solana-client-wasm",
  "solana-sdk",
  "wasi-sol",
