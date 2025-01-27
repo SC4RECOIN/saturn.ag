@@ -1,4 +1,4 @@
-use leptos::*;
+use leptos::prelude::*;
 use std::str::FromStr;
 use wasi_sol::pubkey::Pubkey;
 
@@ -7,12 +7,12 @@ use crate::components::wallet::WalletConnect;
 #[component]
 pub fn Swap() -> impl IntoView {
     let input_mint =
-        create_rw_signal(Pubkey::from_str("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v").unwrap());
+        RwSignal::new(Pubkey::from_str("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v").unwrap());
     let output_mint =
-        create_rw_signal(Pubkey::from_str("So11111111111111111111111111111111111111112").unwrap());
+        RwSignal::new(Pubkey::from_str("So11111111111111111111111111111111111111112").unwrap());
 
-    let input_value = create_rw_signal("".to_string());
-    let output_value = create_rw_signal("".to_string());
+    let input_value = RwSignal::new("".to_string());
+    let output_value = RwSignal::new("".to_string());
 
     view! {
         <div class="rounded-2xl p-4 md:p-6 w-full shadow-md border border-gray-200">

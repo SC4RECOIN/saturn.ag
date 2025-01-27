@@ -1,11 +1,9 @@
 use crate::components::wallet::WalletConnect;
+use components::connection::ConnectionProvider;
+use components::wallet::WalletProvider;
 use components::{providers::Providers, swap::Swap};
-use leptos::*;
-use leptos_query::provide_query_client;
-use wasi_sol::{
-    core::wallet::Wallet,
-    provider::leptos::{connection::ConnectionProvider, wallet::WalletProvider},
-};
+use leptos::prelude::*;
+use wasi_sol::core::wallet::Wallet;
 
 pub mod components;
 
@@ -17,8 +15,6 @@ pub fn App() -> impl IntoView {
         Wallet::Solflare.into(),
         Wallet::Backpack.into(),
     ];
-
-    provide_query_client();
 
     view! {
         <ConnectionProvider endpoint=endpoint>
@@ -43,5 +39,5 @@ pub fn App() -> impl IntoView {
 fn main() {
     console_error_panic_hook::set_once();
     wasm_logger::init(wasm_logger::Config::default());
-    leptos::mount_to_body(|| view! { <App /> })
+    leptos::mount::mount_to_body(|| view! { <App /> })
 }
