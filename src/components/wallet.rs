@@ -9,8 +9,6 @@ use wasi_sol::core::{
     };
 use crate::state::{GlobalState, GlobalStateStoreFields};
 use codee::{Decoder, Encoder};
-use wasm_bindgen::prelude::*;
-use js_sys::Object;
 
 #[component]
 pub fn WalletConnect(#[prop(optional, default = false)] large: bool) -> impl IntoView {
@@ -183,65 +181,31 @@ pub fn WalletConnect(#[prop(optional, default = false)] large: bool) -> impl Int
     }
 }
 
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(js_namespace = window, js_name = xnft)]
-    pub static XNFT: Backpack;
-
-    #[wasm_bindgen(extends = Object)]
-    pub type Backpack;
-
-    #[wasm_bindgen(js_namespace = window, js_name = solflare)]
-    pub static SOLFLARE: Solflare;
-
-    #[wasm_bindgen(extends = Object)]
-    pub type Solflare;
-
-    #[wasm_bindgen(js_namespace = window, js_name = solana)]
-    pub static SOLANA: Solana;
-
-    #[wasm_bindgen]
-    pub type Solana;
-}
-
 pub fn use_autoconnect_wallet() {
     let state = expect_context::<Store<GlobalState>>();
     let (wallet_name, set_wallet_name, _) = use_local_storage::<WalletWrapper, WalletEncoder>("wallet_name");
 
-    let connect_wallet = move |wallet: Wallet| {
-        let mut wallet_info = BaseWalletAdapter::from(wallet);
-
-        spawn_local(async move {
-            let connected = wallet_info.connect().await;
-
-            match connected {
-                Ok(true) => {
-                    state.wallet_adapter().set(wallet_info);
-                    state.wallet_connected().set(true);
-                }
-                Ok(false) | Err(_) => {
-                    let err = connected.err().unwrap_or(WalletError::WalletConnectionError);
-                    log::error!("{}", err);
-                    // set_wallet_name.set(WalletWrapper::default());
-                }
-            }
-        });
-    };
-
-    Effect::new(move || {
-        if state.wallet_connected().get() {
-            return;
-        }
+    if wallet_name.get() != WalletWrapper::Unknown && !state.wallet_connected().get() {
         set_timeout(move || {
-            log::info!("Connecting wallet after 5s");
-            match wallet_name.get() {
-                WalletWrapper::Phantom if !SOLANA.is_undefined() => connect_wallet(Wallet::Phantom),
-                WalletWrapper::Solflare if !SOLFLARE.is_undefined() => connect_wallet(Wallet::Solflare),
-                WalletWrapper::Backpack if !XNFT.is_undefined() => connect_wallet(Wallet::Backpack),
-                WalletWrapper::Phantom | WalletWrapper::Solflare | WalletWrapper::Backpack | WalletWrapper::Unknown => (),
-            }
+            spawn_local(async move {
+                let wallet: Wallet = wallet_name.get().into();
+                let mut wallet_info = BaseWalletAdapter::from(wallet);
+                let connected = wallet_info.connect().await;
+    
+                match connected {
+                    Ok(true) => {
+                        state.wallet_adapter().set(wallet_info);
+                        state.wallet_connected().set(true);
+                    }
+                    Ok(false) | Err(_) => {
+                        let err = connected.err().unwrap_or(WalletError::WalletConnectionError);
+                        log::error!("{}", err);
+                        set_wallet_name.set(WalletWrapper::default());
+                    }
+                }
+            });
         }, Duration::from_secs(1));
-    });
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Default)]
