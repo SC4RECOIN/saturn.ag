@@ -1,11 +1,18 @@
 use leptos::prelude::*;
+use reactive_stores::Store;
 use std::str::FromStr;
 use wasi_sol::pubkey::Pubkey;
 
-use crate::components::wallet::WalletConnect;
+use crate::{
+    components::wallet::WalletConnect,
+    state::{GlobalState, GlobalStateStoreFields},
+};
 
 #[component]
 pub fn Swap() -> impl IntoView {
+    let state = expect_context::<Store<GlobalState>>();
+    let wallet_connected = state.wallet_connected();
+
     let input_mint =
         RwSignal::new(Pubkey::from_str("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v").unwrap());
     let output_mint =
@@ -22,9 +29,9 @@ pub fn Swap() -> impl IntoView {
                     "Priority fee:" <span class="text-green-600 ml-1 cursor-pointer">"Market"</span>
                 </div>
             </div>
-            <AssetSelector mint=input_mint amount=input_value />
+            <AssetSelector _mint=input_mint amount=input_value />
             <div class="text-center my-2 text-gray-500">"↓"</div>
-            <AssetSelector mint=output_mint amount=output_value disabled=true />
+            <AssetSelector _mint=output_mint amount=output_value disabled=true />
             <div class="border border-gray-200 rounded-xl p-4 my-6 text-sm flex flex-col gap-2">
                 <div class="flex justify-between">
                     <span class="text-gray-500">"Rate"</span>
@@ -39,14 +46,25 @@ pub fn Swap() -> impl IntoView {
                     <span>"1.839922 SOL"</span>
                 </div>
             </div>
-            {move || { if true { Some(view! { <WalletConnect large=true /> }) } else { None } }}
+            {move || {
+                if !wallet_connected.get() {
+                    view! { <WalletConnect large=true /> }.into_any()
+                } else {
+                    view! {
+                        <button class="bg-black text-white rounded-3xl w-full hover:bg-gray-800 text-center py-1 py-4 text-lg">
+                            Swap
+                        </button>
+                    }
+                        .into_any()
+                }
+            }}
         </div>
     }
 }
 
 #[component]
 pub fn AssetSelector(
-    mint: RwSignal<Pubkey>,
+    _mint: RwSignal<Pubkey>,
     amount: RwSignal<String>,
     #[prop(optional, default = false)] disabled: bool,
 ) -> impl IntoView {

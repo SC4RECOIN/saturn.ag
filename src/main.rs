@@ -1,11 +1,10 @@
 use crate::components::wallet::WalletConnect;
 use components::connection::ConnectionProvider;
-use components::wallet::WalletProvider;
+use components::wallet::use_autoconnect_wallet;
 use components::{providers::Providers, swap::Swap};
 use leptos::prelude::*;
 use reactive_stores::Store;
 use state::GlobalState;
-use wasi_sol::core::wallet::Wallet;
 
 pub mod components;
 pub mod state;
@@ -13,30 +12,20 @@ pub mod state;
 #[component]
 pub fn App() -> impl IntoView {
     provide_context(Store::new(GlobalState::default()));
-
-    let endpoint = "https://api.mainnet-beta.solana.com";
-    let wallets = vec![
-        Wallet::Phantom.into(),
-        Wallet::Solflare.into(),
-        Wallet::Backpack.into(),
-    ];
+    use_autoconnect_wallet();
 
     view! {
-        <ConnectionProvider endpoint=endpoint>
-            <WalletProvider wallets=wallets>
-                <div class="min-w-[min(1200px,100vw)] px-2 py-4">
-                    <div class="flex justify-between mb-10 px-4">
-                        <div class="text-xl font-bold">"Saturn 🪐"</div>
-                        <div>
-                            <WalletConnect />
-                        </div>
-                    </div>
-                    <div class="flex flex-col lg:flex-row gap-8 justify-center">
-                        <Swap />
-                        <Providers />
-                    </div>
+        <ConnectionProvider endpoint="https://api.mainnet-beta.solana.com">
+            <div class="min-w-[min(1200px,100vw)] px-2 py-4">
+                <div class="flex justify-between mb-10 px-4">
+                    <div class="text-xl font-bold">"Saturn 🪐"</div>
+                    <WalletConnect />
                 </div>
-            </WalletProvider>
+                <div class="flex flex-col lg:flex-row gap-8 justify-center">
+                    <Swap />
+                    <Providers />
+                </div>
+            </div>
         </ConnectionProvider>
     }
 }
