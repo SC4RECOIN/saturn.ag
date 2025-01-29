@@ -190,8 +190,8 @@ pub fn use_autoconnect_wallet() {
             spawn_local(async move {
                 let wallet: Wallet = wallet_name.get().into();
                 let mut wallet_info = BaseWalletAdapter::from(wallet);
+
                 let connected = wallet_info.connect().await;
-    
                 match connected {
                     Ok(true) => {
                         state.wallet_adapter().set(wallet_info);
