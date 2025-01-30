@@ -1,34 +1,50 @@
 use crate::components::wallet::WalletConnect;
 use components::{providers::Providers, swap::Swap};
-use leptos::prelude::*;
-use reactive_stores::Store;
-use state::GlobalState;
+use dioxus::prelude::*;
+use dioxus_logger::tracing::Level;
+use wallet_adapter::WalletAdapter;
 
 pub mod components;
-pub mod state;
+
+#[derive(Debug, PartialEq, Eq, Clone)]
+pub(crate) struct DioxusWalletAdapter {
+    connection: WalletAdapter,
+    show_modal: bool,
+}
 
 #[component]
-pub fn App() -> impl IntoView {
-    provide_context(Store::new(GlobalState {
-        wallet_connected: false,
-    }));
+fn App() -> Element {
+    use_context_provider(|| {
+        Signal::new(DioxusWalletAdapter {
+            connection: WalletAdapter::init().unwrap(),
+            show_modal: false,
+        })
+    });
 
-    view! {
-        <div class="min-w-[min(1200px,100vw)] px-2 py-4">
-            <div class="flex justify-between mb-10 px-4">
-                <div class="text-xl font-bold">"Saturn 🪐"</div>
-                <WalletConnect />
-            </div>
-            <div class="flex flex-col lg:flex-row gap-8 justify-center">
-                <Swap />
-                <Providers />
-            </div>
-        </div>
+    rsx! {
+        document::Link { rel: "stylesheet", href: asset!("/assets/output.css") }
+
+        div {
+            class: "min-w-[min(1200px,100vw)] px-2 py-4",
+            div {
+                class: "flex justify-between mb-10 px-4",
+                div {
+                    class: "text-xl font-bold",
+                    "Saturn 🪐"
+                }
+                WalletConnect {}
+            }
+            div {
+                class: "flex flex-col lg:flex-row gap-8 justify-center",
+                Swap {}
+                Providers {}
+            }
+        }
     }
 }
 
 fn main() {
     console_error_panic_hook::set_once();
-    wasm_logger::init(wasm_logger::Config::default());
-    leptos::mount::mount_to_body(|| view! { <App /> })
+    dioxus_logger::init(Level::INFO).expect("failed to init logger");
+    launch(App);
 }
