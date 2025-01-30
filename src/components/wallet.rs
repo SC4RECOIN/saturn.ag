@@ -1,41 +1,22 @@
 use dioxus::prelude::*;
+use wallet_adapter::Wallet;
 
 use crate::DioxusWalletAdapter;
-
-enum Wallet {
-    Phantom,
-    Solflare,
-    Backpack,
-}
-
-impl Wallet {
-    fn as_str(&self) -> &'static str {
-        match self {
-            Wallet::Phantom => "Phantom",
-            Wallet::Solflare => "Solflare",
-            Wallet::Backpack => "Backpack",
-        }
-    }
-
-    fn as_logo(&self) -> Asset {
-        match self {
-            Wallet::Phantom => asset!("/assets/phantom_logo.png"),
-            Wallet::Solflare => asset!("/assets/solflare_logo.png"),
-            Wallet::Backpack => asset!("/assets/backpack_logo.png"),
-        }
-    }
-}
 
 #[component]
 pub fn WalletConnect(is_large: Option<bool>) -> Element {
     let mut adapter: Signal<DioxusWalletAdapter> = use_context();
-    let connected = adapter.read().connection.is_connected();
-    let show_modal = adapter.read().show_connect_modal;
-
     let mut error = use_signal(|| String::new());
 
     let mut connect_wallet = move |wallet: Wallet| {
         error.set(String::new());
+        spawn(async move {
+            let wallet = wallet.clone();
+            spawn(async move {
+                adapter.write().connection.connect(wallet).await.unwrap_or_default();
+                adapter.write().show_connect_modal = false;
+            });
+        });
     };
 
     let disconnect_wallet = move |_| {};
@@ -44,7 +25,7 @@ pub fn WalletConnect(is_large: Option<bool>) -> Element {
         div {
             div {
                 class: "bg-black text-white rounded-3xl w-full hover:bg-gray-800 text-center py-1",
-                if !connected {
+                if !adapter.read().connection.is_connected() {
                     button {
                         class: if is_large.unwrap_or(false) {
                             "w-full h-full py-4 text-lg"
@@ -67,7 +48,7 @@ pub fn WalletConnect(is_large: Option<bool>) -> Element {
                     }
                 }
             }
-            if show_modal {
+            if adapter.read().show_connect_modal {
                 div {
                     class: "modal fixed inset-0 bg-black/50 flex justify-center items-center",
                     div {
@@ -86,17 +67,24 @@ pub fn WalletConnect(is_large: Option<bool>) -> Element {
                         }
                         div {
                             class: "flex flex-row gap-4",
-                            for wallet in [Wallet::Phantom, Wallet::Solflare, Wallet::Backpack].iter() {
-                                button {
-                                    class: "border border-gray-300 p-2 rounded hover:border-black cursor-pointer transition-colors w-32 flex flex-col items-center justify-center",
-                                    onclick: move |_| connect_wallet(*wallet),
-                                    img {
-                                        src: wallet.as_logo(),
-                                        alt: "wallet logo",
-                                        class: "w-20 h-20"
+                            for wallet in adapter.read().connection.wallets() {
+                                {
+                                    let icon = wallet.icon().as_ref().unwrap().to_string();
+                                    let name = wallet.name().to_string();
+                                    rsx! {
+                                        button {
+                                            class: "border border-gray-300 p-2 rounded hover:border-black cursor-pointer transition-colors w-32 flex flex-col items-center justify-center",
+                                            onclick: move |_| connect_wallet(wallet.clone()),
+                                            img {
+                                                src: icon,
+                                                alt: "wallet logo",
+                                                class: "w-20 h-20"
+                                            }
+                                            {name}
+                                        }
                                     }
-                                    p { "{wallet.as_str()}" }
                                 }
+
                             }
                             if !error.read().is_empty() {
                                 div {
