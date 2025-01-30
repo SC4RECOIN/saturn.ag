@@ -9,7 +9,7 @@ pub mod components;
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub(crate) struct DioxusWalletAdapter {
     connection: WalletAdapter,
-    show_modal: bool,
+    show_connect_modal: bool,
 }
 
 #[component]
@@ -17,7 +17,7 @@ fn App() -> Element {
     use_context_provider(|| {
         Signal::new(DioxusWalletAdapter {
             connection: WalletAdapter::init().unwrap(),
-            show_modal: false,
+            show_connect_modal: false,
         })
     });
 

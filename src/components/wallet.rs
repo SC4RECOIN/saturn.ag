@@ -2,15 +2,41 @@ use dioxus::prelude::*;
 
 use crate::DioxusWalletAdapter;
 
+enum Wallet {
+    Phantom,
+    Solflare,
+    Backpack,
+}
+
+impl Wallet {
+    fn as_str(&self) -> &'static str {
+        match self {
+            Wallet::Phantom => "Phantom",
+            Wallet::Solflare => "Solflare",
+            Wallet::Backpack => "Backpack",
+        }
+    }
+
+    fn as_logo(&self) -> Asset {
+        match self {
+            Wallet::Phantom => asset!("/assets/phantom_logo.png"),
+            Wallet::Solflare => asset!("/assets/solflare_logo.png"),
+            Wallet::Backpack => asset!("/assets/backpack_logo.png"),
+        }
+    }
+}
+
 #[component]
 pub fn WalletConnect(is_large: Option<bool>) -> Element {
     let mut adapter: Signal<DioxusWalletAdapter> = use_context();
     let connected = adapter.read().connection.is_connected();
-    let show_modal = adapter.read().show_modal;
+    let show_modal = adapter.read().show_connect_modal;
 
     let mut error = use_signal(|| String::new());
 
-    let connect_wallet = move |_| error.set(String::new());
+    let mut connect_wallet = move |wallet: Wallet| {
+        error.set(String::new());
+    };
 
     let disconnect_wallet = move |_| {};
 
@@ -25,7 +51,7 @@ pub fn WalletConnect(is_large: Option<bool>) -> Element {
                         } else {
                             "w-full h-full px-4 py-1"
                         },
-                        onclick: move |_| adapter.write().show_modal = true,
+                        onclick: move |_| adapter.write().show_connect_modal = true,
                         "Connect Wallet"
                     }
                 } else {
@@ -48,7 +74,7 @@ pub fn WalletConnect(is_large: Option<bool>) -> Element {
                         class: "bg-white p-5 rounded-lg w-[400px] relative",
                         button {
                             class: "absolute top-2 right-5 text-gray-500 hover:text-black",
-                            onclick: move |_| adapter.write().show_modal = false,
+                            onclick: move |_| adapter.write().show_connect_modal = false,
                             span {
                                 class: "text-3xl",
                                 "×"
@@ -59,38 +85,17 @@ pub fn WalletConnect(is_large: Option<bool>) -> Element {
                             "Connect Wallet"
                         }
                         div {
-                            class: "flex flex-col gap-4",
-                            div {
-                                class: "flex justify-around gap-2",
+                            class: "flex flex-row gap-4",
+                            for wallet in [Wallet::Phantom, Wallet::Solflare, Wallet::Backpack].iter() {
                                 button {
                                     class: "border border-gray-300 p-2 rounded hover:border-black cursor-pointer transition-colors w-32 flex flex-col items-center justify-center",
-                                    onclick: connect_wallet,
+                                    onclick: move |_| connect_wallet(*wallet),
                                     img {
-                                        src: asset!("/assets/phantom_logo.png"),
-                                        alt: "Phantom Wallet",
+                                        src: wallet.as_logo(),
+                                        alt: "wallet logo",
                                         class: "w-20 h-20"
                                     }
-                                    p { "Phantom" }
-                                }
-                                button {
-                                    class: "border border-gray-300 p-2 rounded hover:border-black cursor-pointer transition-colors w-32 flex flex-col items-center justify-center",
-                                    onclick: connect_wallet,
-                                    img {
-                                        src: asset!("/assets/solflare_logo.png"),
-                                        alt: "Solflare Wallet",
-                                        class: "w-20 h-20"
-                                    }
-                                    p { "Solflare" }
-                                }
-                                button {
-                                    class: "border border-gray-300 p-2 rounded hover:border-black cursor-pointer transition-colors w-32 flex flex-col items-center justify-center",
-                                    onclick: connect_wallet,
-                                    img {
-                                        src: asset!("/assets/backpack_logo.png"),
-                                        alt: "Backpack Wallet",
-                                        class: "w-20 h-20"
-                                    }
-                                    p { "Backpack" }
+                                    p { "{wallet.as_str()}" }
                                 }
                             }
                             if !error.read().is_empty() {
