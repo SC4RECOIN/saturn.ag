@@ -1,7 +1,7 @@
 use leptos::prelude::*;
 use reactive_stores::Store;
+use solana_sdk::pubkey::Pubkey;
 use std::str::FromStr;
-use wasi_sol::pubkey::Pubkey;
 
 use crate::{
     components::wallet::WalletConnect,
