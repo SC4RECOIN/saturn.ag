@@ -42,7 +42,7 @@ pub fn WalletConnect(is_large: Option<bool>) -> Element {
 
     rsx! {
         div {
-            div { class: "bg-black text-white rounded-3xl w-full hover:bg-gray-800 text-center py-1",
+            div { class: "bg-black text-white rounded-3xl w-full hover:bg-gray-800 text-center font-medium py-1",
                 if !adapter.read().connection.is_connected() {
                     button {
                         class: if is_large.unwrap_or(false) { "w-full h-full py-4 text-lg" } else { "w-full h-full px-4 py-1" },
@@ -55,16 +55,7 @@ pub fn WalletConnect(is_large: Option<bool>) -> Element {
                         class: "flex items-center gap-1 px-4",
                         img {
                             class: "w-8 h-8",
-                            src: adapter
-                                .read()
-                                .connection
-                                .connected_wallet()
-                                .as_ref()
-                                .unwrap()
-                                .icon()
-                                .as_ref()
-                                .unwrap()
-                                .to_string(),
+                            src: adapter.read().connection.connected_wallet().unwrap().icon().unwrap().to_string(),
                             alt: "Wallet Icon",
                         }
                         "Disconnect"

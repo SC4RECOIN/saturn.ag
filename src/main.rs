@@ -23,19 +23,19 @@ fn App() -> Element {
 
     rsx! {
         document::Link { rel: "stylesheet", href: asset!("/assets/output.css") }
+        document::Link { rel: "preconnect", href: "https://fonts.googleapis.com" }
+        document::Link { rel: "preconnect", href: "https://fonts.gstatic.com" }
+        document::Link {
+            rel: "stylesheet",
+            href: "https://fonts.googleapis.com/css2?family=Teko:wght@300..700&display=swa",
+        }
 
-        div {
-            class: "min-w-[min(1200px,100vw)] px-2 py-4",
-            div {
-                class: "flex justify-between mb-10 px-4",
-                div {
-                    class: "text-xl font-bold",
-                    "Saturn 🪐"
-                }
+        div { class: "min-w-[min(1200px,100vw)] px-2 py-4",
+            div { class: "flex justify-between mb-10 px-4",
+                div { class: "font-bold font-teko", "Saturn 🪐" }
                 WalletConnect {}
             }
-            div {
-                class: "flex flex-col lg:flex-row gap-8 justify-center",
+            div { class: "flex flex-col lg:flex-row gap-8 justify-center",
                 Swap {}
                 Providers {}
             }

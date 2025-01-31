@@ -2,7 +2,13 @@ use dioxus::prelude::*;
 use solana_sdk::pubkey::Pubkey;
 use std::str::FromStr;
 
-use crate::{components::wallet::WalletConnect, DioxusWalletAdapter};
+use crate::{
+    components::{
+        asset_select::{AssetSelect, AssetSelectMode},
+        wallet::WalletConnect,
+    },
+    DioxusWalletAdapter,
+};
 
 #[component]
 pub fn Swap() -> Element {
@@ -18,79 +24,39 @@ pub fn Swap() -> Element {
     let output_value = use_signal(|| String::new());
 
     rsx! {
-        div {
-            class: "rounded-2xl p-4 md:p-6 w-full shadow-md border border-gray-200",
-            div {
-                class: "flex justify-between mb-2",
-                h3 {
-                    class: "font-bold text-lg",
-                    "Swap"
-                }
-                div {
-                    class: "flex items-center text-sm",
+        div { class: "rounded-2xl p-4 md:p-6 w-full shadow-md border border-gray-200",
+            div { class: "flex justify-between mb-2",
+                h3 { class: "font-bold text-lg", "Swap" }
+                div { class: "flex items-center text-sm",
                     "Priority fee:"
-                    span {
-                        class: "text-green-600 ml-1 cursor-pointer",
-                        "Market"
-                    }
+                    span { class: "text-green-600 ml-1 cursor-pointer", "Market" }
                 }
             }
-            AssetSelector {
-                mint: input_mint,
-                amount: input_value,
-            }
-            div {
-                class: "text-center my-2 text-gray-500",
-                "↓"
-            }
-            AssetSelector {
-                mint: output_mint,
-                amount: output_value,
-                disabled: true,
-            }
-            div {
-                class: "border border-gray-200 rounded-xl p-4 my-6 text-sm flex flex-col gap-2",
-                div {
-                    class: "flex justify-between",
-                    span {
-                        class: "text-gray-500",
-                        "Rate"
-                    }
-                    span {
-                        "1 USDC = 0.003683 SOL"
-                    }
+            SwapEntry { mint: input_mint, amount: input_value }
+            div { class: "text-center my-2 text-gray-500", "↓" }
+            SwapEntry { mint: output_mint, amount: output_value, disabled: true }
+            div { class: "border border-gray-200 rounded-xl p-4 my-6 text-sm flex flex-col gap-2",
+                div { class: "flex justify-between",
+                    span { class: "text-gray-500", "Rate" }
+                    span { "1 USDC = 0.003683 SOL" }
                 }
-                div {
-                    class: "flex justify-between",
-                    span {
-                        class: "text-gray-500",
-                        "Slippage"
-                    }
-                    span {
-                        "0.1% ›"
-                    }
+                div { class: "flex justify-between",
+                    span { class: "text-gray-500", "Slippage" }
+                    span { "0.1% ›" }
                 }
-                div {
-                    class: "flex justify-between",
-                    span {
-                        class: "text-gray-500",
-                        "Minimum received"
-                    }
-                    span {
-                        "1.839922 SOL"
-                    }
+                div { class: "flex justify-between",
+                    span { class: "text-gray-500", "Minimum received" }
+                    span { "1.839922 SOL" }
                 }
             }
             if !connected {
-             WalletConnect { is_large: true }
+                WalletConnect { is_large: true }
             } else {
-                    button {
-                        class: "bg-black text-white rounded-3xl w-full hover:bg-gray-800 text-center py-1 py-4 text-lg",
-                        onclick: move |_| {
-                            // Swap logic here
-                        },
-                        "Swap"
-                    }
+                button {
+                    class: "bg-black text-white rounded-3xl w-full hover:bg-gray-800 text-center py-1 py-4 text-lg",
+                    onclick: move |_| {},
+                    "Swap"
+                }
             }
         }
     }
@@ -105,25 +71,23 @@ pub struct AssetSelectorProps {
 }
 
 #[component]
-pub fn AssetSelector(mut props: AssetSelectorProps) -> Element {
+pub fn SwapEntry(mut props: AssetSelectorProps) -> Element {
+    let mut mode = use_signal(|| AssetSelectMode::None);
+
     rsx! {
-        div {
-            class: "bg-gray-50 rounded-xl p-4 mb-3 flex justify-between items-center max-w-1/2",
+        div { class: "bg-gray-50 rounded-xl p-4 mb-3 flex justify-between items-center max-w-1/2",
             div {
                 class: "flex items-center gap-2 cursor-pointer font-medium",
+                onclick: move |_| mode.set(AssetSelectMode::Input),
                 img {
                     src: "https://www.okx.com/cdn/web3/currency/token/784-0xdba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC-1.png",
                     alt: "Asset Icon",
                     class: "w-6 h-6",
                 }
                 span { "USDC" }
-                span {
-                    class: "text-gray-500 text-xs",
-                    "▼"
-                }
+                span { class: "text-gray-500 text-xs", "▼" }
             }
-            div {
-                class: "flex flex-col items-end",
+            div { class: "flex flex-col items-end",
                 input {
                     r#type: "number",
                     value: "{props.amount}",
@@ -134,11 +98,9 @@ pub fn AssetSelector(mut props: AssetSelectorProps) -> Element {
                     placeholder: "0.0",
                     disabled: "{props.disabled}",
                 }
-                div {
-                    class: "text-gray-500 text-sm",
-                    "$499.95"
-                }
+                div { class: "text-gray-500 text-sm", "$499.95" }
             }
         }
+        AssetSelect { mode }
     }
 }

@@ -5,3 +5,10 @@
 body {
     @apply flex justify-center min-h-screen font-sans;
 }
+
+.font-teko {
+    font-family: 'Teko', sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-size: 32px;
+}
