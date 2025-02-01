@@ -10,6 +10,7 @@ pub mod components;
 pub(crate) struct DioxusWalletAdapter {
     connection: WalletAdapter,
     show_connect_modal: bool,
+    favorite_assets: Vec<&'static str>,
 }
 
 #[component]
@@ -18,6 +19,7 @@ fn App() -> Element {
         Signal::new(DioxusWalletAdapter {
             connection: WalletAdapter::init().unwrap(),
             show_connect_modal: false,
+            favorite_assets: vec![],
         })
     });
 

@@ -1,5 +1,7 @@
 use dioxus::prelude::*;
 
+use crate::DioxusWalletAdapter;
+
 #[derive(PartialEq, Clone)]
 pub enum AssetSelectMode {
     None,
@@ -26,8 +28,14 @@ pub fn AssetSelect(mode: Signal<AssetSelectMode>) -> Element {
                 onclick: move |e| e.stop_propagation(),
 
                 // Header
-                div { class: "flex items-center justify-between p-4 border-b border-gray-200",
-                    h3 { class: "text-lg font-medium", "Select pay token" }
+                div { class: "flex items-center justify-between px-4 py-2 border-b border-gray-200",
+                    h3 { class: "text-lg font-medium",
+                        if *mode.read() == AssetSelectMode::Input {
+                            "Select from token"
+                        } else {
+                            "Select to token"
+                        }
+                    }
                     button {
                         class: "text-gray-500 hover:text-gray-700 text-2xl mb-2",
                         onclick: move |_| mode.set(AssetSelectMode::None),
@@ -42,7 +50,6 @@ pub fn AssetSelect(mode: Signal<AssetSelectMode>) -> Element {
                             // Search icon
                             svg {
                                 class: "h-5 w-5 text-gray-400",
-                                xmlns: "http://www.w3.org/2000/svg",
                                 fill: "none",
                                 view_box: "0 0 24 24",
                                 stroke: "currentColor",
@@ -55,7 +62,7 @@ pub fn AssetSelect(mode: Signal<AssetSelectMode>) -> Element {
                             }
                         }
                         input {
-                            class: "w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500",
+                            class: "w-full pl-10 pr-4 py-2 rounded-lg bg-gray-100 focus:outline-gray-500 focus:outline-1",
                             placeholder: "Search token name or address",
                             value: "{search_query}",
                             oninput: move |e| search_query.set(e.value().clone()),
@@ -64,12 +71,22 @@ pub fn AssetSelect(mode: Signal<AssetSelectMode>) -> Element {
                 }
 
                 // Token list
-                div { class: "flex-1 overflow-y-auto",
-                    div { class: "divide-y",
-                        // Token items
-                        TokenItem { symbol: "USDT", name: "Tether", icon: "🟢" }
-                        TokenItem { symbol: "USDC", name: "USD Coin", icon: "🔵" }
-                        TokenItem { symbol: "SOLL", name: "Solana", icon: "◎" }
+                div { class: "flex flex-col mb-2",
+                    // Token items
+                    TokenItem {
+                        symbol: "USDC",
+                        name: "Tether",
+                        icon: "https://www.okx.com/cdn/web3/currency/token/784-0xdba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC-1.png",
+                    }
+                    TokenItem {
+                        symbol: "USDC",
+                        name: "USD Coin",
+                        icon: "https://www.okx.com/cdn/web3/currency/token/784-0xdba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC-1.png",
+                    }
+                    TokenItem {
+                        symbol: "SOL",
+                        name: "Solana",
+                        icon: "https://www.okx.com/cdn/web3/currency/token/784-0xdba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC-1.png",
                     }
                 }
             }
@@ -79,16 +96,37 @@ pub fn AssetSelect(mode: Signal<AssetSelectMode>) -> Element {
 
 #[component]
 fn TokenItem(symbol: &'static str, name: &'static str, icon: &'static str) -> Element {
+    let mut adapter: Signal<DioxusWalletAdapter> = use_context();
+    let is_favorite = adapter.read().favorite_assets.contains(&symbol);
+
+    let update_favorite = move |_| {
+        let mut adapter = adapter.write();
+        match is_favorite {
+            true => adapter.favorite_assets.retain(|&s| s != symbol),
+            false => adapter.favorite_assets.push(symbol),
+        }
+    };
+
     rsx! {
         div { class: "flex items-center p-4 hover:bg-gray-50 cursor-pointer",
-            div { class: "w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 mr-3",
-                "{icon}"
-            }
+            img { src: icon, alt: "Asset Icon", class: "w-6 h-6 mr-2" }
             div { class: "flex-1",
                 div { class: "font-medium", "{symbol}" }
                 div { class: "text-sm text-gray-500", "{name}" }
             }
-            button { class: "text-gray-400 hover:text-gray-600", "☆" }
+            if is_favorite {
+                button {
+                    class: "text-yellow-400 hover:text-gray-600",
+                    onclick: update_favorite,
+                    "★"
+                }
+            } else {
+                button {
+                    class: "text-gray-400 hover:text-gray-600",
+                    onclick: update_favorite,
+                    "☆"
+                }
+            }
         }
     }
 }
