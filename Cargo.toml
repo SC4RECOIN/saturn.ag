@@ -9,6 +9,7 @@ dioxus-logger = "0.6.0"
 console_error_panic_hook = "0.1.7"
 solana-sdk = "1.18.0"
 wallet-adapter = { git = "https://github.com/JamiiDao/SolanaWalletAdapter" }
+gloo-storage = "0.3.0"
 
 [profile]
 

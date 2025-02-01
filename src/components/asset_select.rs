@@ -1,4 +1,6 @@
 use dioxus::prelude::*;
+use dioxus_logger::tracing::warn;
+use gloo_storage::{LocalStorage, Storage};
 
 use crate::DioxusWalletAdapter;
 
@@ -95,15 +97,19 @@ pub fn AssetSelect(mode: Signal<AssetSelectMode>) -> Element {
 }
 
 #[component]
-fn TokenItem(symbol: &'static str, name: &'static str, icon: &'static str) -> Element {
+fn TokenItem(symbol: String, name: String, icon: String) -> Element {
     let mut adapter: Signal<DioxusWalletAdapter> = use_context();
     let is_favorite = adapter.read().favorite_assets.contains(&symbol);
+    let s = symbol.clone();
 
     let update_favorite = move |_| {
         let mut adapter = adapter.write();
         match is_favorite {
-            true => adapter.favorite_assets.retain(|&s| s != symbol),
-            false => adapter.favorite_assets.push(symbol),
+            true => adapter.favorite_assets.retain(|item| item != &s),
+            false => adapter.favorite_assets.push(s.clone()),
+        }
+        if let Err(e) = LocalStorage::set("favorite_assets", &adapter.favorite_assets) {
+            warn!("error saving favorite assets: {}", e);
         }
     };
 
