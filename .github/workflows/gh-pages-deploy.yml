@@ -1,71 +1,13 @@
-name: Release to Github Pages
+name: github pages
 
 on:
   push:
-    branches: [main]
-  workflow_dispatch:
-
-permissions:
-  contents: write # for committing to gh-pages branch.
-  pages: write
-  id-token: write
-
-# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
+    branches:
+      - main
 
 jobs:
-  Github-Pages-Release:
-    timeout-minutes: 10
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
+  build-deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4
-
-      # rust
-      - name: Install nightly Rust
-        uses: dtolnay/rust-toolchain@nightly
-        with:
-          components: clippy, rustfmt
-
-      - name: Add WASM target
-        run: rustup target add wasm32-unknown-unknown
-
-      - name: lint
-        run: cargo clippy & cargo fmt
-
-      # tailwind
-      - name: Install Tailwind CSS
-        run: npm install -D tailwindcss@3
-
-      - name: Build Tailwind CSS
-        run: npx tailwindcss -i ./input.css -o ./style/output.css
-
-      # trunk
-      - name: Download and install Trunk binary
-        run: wget -qO- https://github.com/trunk-rs/trunk/releases/download/v0.18.4/trunk-x86_64-unknown-linux-gnu.tar.gz | tar -xzf-
-
-      - name: Build with Trunk
-        run: ./trunk build --release --public-url "${GITHUB_REPOSITORY#*/}"
-
-      # deploy static pages
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-        with:
-          enablement: true
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
-        with:
-          path: "./dist"
-
-      - name: Deploy to GitHub Pages 🚀
-        id: deployment
-        uses: actions/deploy-pages@v3
+      - name: "Dioxus Deploy"
+        uses: DioxusLabs/deploy-action@0.1.2
