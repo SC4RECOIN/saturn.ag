@@ -1,6 +1,10 @@
+use std::str::FromStr;
+
 use clap::{Parser, Subcommand};
 use dotenv::dotenv;
 use serde::Deserialize;
+use sqlx::{postgres::PgConnectOptions, PgPool};
+use tokio::time::{sleep, Duration};
 
 #[derive(Parser)]
 struct Cli {
@@ -36,6 +40,17 @@ struct TokenInfo {
 async fn update_assets() {
     println!("fetching assets from Jupiter...");
 
+    let database_url = std::env::var("DB_CONNECTION_STRING")
+        .expect("DATABASE_URL must be set in environment");
+
+    let options = PgConnectOptions::from_str(&database_url)
+        .expect("failed to parse database url");
+
+    // create connection pool
+    let pool = PgPool::connect_with(options)
+        .await
+        .expect("failed to create connection pool");
+
     let client = reqwest::Client::new();
     let response = client
         .get("https://token.jup.ag/all")
@@ -48,9 +63,44 @@ async fn update_assets() {
         .await
         .expect("failed to parse assets from Jupiter");
 
-    println!("successfully fetched {} tokens", tokens.len());
+    // filter out tokens without logo_uri
+    let tokens: Vec<TokenInfo> = tokens.into_iter()
+        .filter(|token| token.logo_uri.is_some())
+        .collect();
 
-    for token in tokens.iter().take(5) {
-        println!("Token: {} ({:?})", token.name, token);
+    println!("successfully fetched {} tokens with logos", tokens.len());
+
+    // process tokens in batches of 1000
+    for (i, chunk) in tokens.chunks(1000).enumerate() {
+        println!("processing chunk ({})", (i+1) * chunk.len());
+
+        let mut query_builder = sqlx::QueryBuilder::new(
+            "INSERT INTO tokens (address, decimals, logo_uri, name, symbol) "
+        );
+
+        query_builder.push_values(chunk, |mut b, token| {
+            b.push_bind(&token.address)
+                .push_bind(token.decimals)
+                .push_bind(&token.logo_uri)
+                .push_bind(&token.name)
+                .push_bind(&token.symbol);
+        });
+
+        query_builder.push(
+            " ON CONFLICT (address) DO UPDATE SET
+                decimals = EXCLUDED.decimals,
+                logo_uri = EXCLUDED.logo_uri,
+                name = EXCLUDED.name,
+                symbol = EXCLUDED.symbol"
+        );
+
+        match query_builder.build().execute(&pool).await {
+            Ok(result) => println!("successfully upserted batch of {} tokens", result.rows_affected()),
+            Err(e) => eprintln!("error upserting batch: {}", e),
+        }
+
+        sleep(Duration::from_millis(100)).await;
     }
+
+    println!("finished updating tokens database");
 }
