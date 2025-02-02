@@ -669,6 +669,18 @@ video {
   max-height: 600px;
 }
 
+.max-h-\[400px\] {
+  max-height: 400px;
+}
+
+.max-h-\[300px\] {
+  max-height: 300px;
+}
+
+.max-h-\[350px\] {
+  max-height: 350px;
+}
+
 .w-20 {
   width: 5rem;
 }
@@ -747,6 +759,10 @@ video {
 
 .gap-8 {
   gap: 2rem;
+}
+
+.overflow-y-scroll {
+  overflow-y: scroll;
 }
 
 .rounded {
@@ -889,6 +905,11 @@ video {
 .py-4 {
   padding-top: 1rem;
   padding-bottom: 1rem;
+}
+
+.py-3 {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
 }
 
 .pl-10 {

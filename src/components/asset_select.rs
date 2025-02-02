@@ -13,6 +13,9 @@ pub enum AssetSelectMode {
 
 #[component]
 pub fn AssetSelect(mode: Signal<AssetSelectMode>) -> Element {
+    let adapter: Signal<DioxusWalletAdapter> = use_context();
+    let tokens = adapter.read().tokens.clone();
+
     let mut search_query = use_signal(|| String::new());
 
     if *mode.read() == AssetSelectMode::None {
@@ -73,22 +76,13 @@ pub fn AssetSelect(mode: Signal<AssetSelectMode>) -> Element {
                 }
 
                 // Token list
-                div { class: "flex flex-col mb-2",
-                    // Token items
-                    TokenItem {
-                        symbol: "USDC",
-                        name: "Tether",
-                        icon: "https://www.okx.com/cdn/web3/currency/token/784-0xdba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC-1.png",
-                    }
-                    TokenItem {
-                        symbol: "USDC",
-                        name: "USD Coin",
-                        icon: "https://www.okx.com/cdn/web3/currency/token/784-0xdba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC-1.png",
-                    }
-                    TokenItem {
-                        symbol: "SOL",
-                        name: "Solana",
-                        icon: "https://www.okx.com/cdn/web3/currency/token/784-0xdba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC-1.png",
+                div { class: "flex flex-col mb-2 max-h-[350px] overflow-y-scroll",
+                    for token in tokens {
+                        TokenItem {
+                            symbol: token.symbol,
+                            name: token.name,
+                            icon: token.logo_uri,
+                        }
                     }
                 }
             }
@@ -114,7 +108,7 @@ fn TokenItem(symbol: String, name: String, icon: String) -> Element {
     };
 
     rsx! {
-        div { class: "flex items-center p-4 hover:bg-gray-50 cursor-pointer",
+        div { class: "flex items-center py-3 px-4 hover:bg-gray-50 cursor-pointer",
             img { src: icon, alt: "Asset Icon", class: "w-6 h-6 mr-2" }
             div { class: "flex-1",
                 div { class: "font-medium", "{symbol}" }

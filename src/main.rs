@@ -1,4 +1,5 @@
 use crate::components::wallet::WalletConnect;
+use crate::database::tokens::TokenInfo;
 use components::{providers::Providers, swap::Swap};
 use dioxus::prelude::*;
 use dioxus_logger::tracing::Level;
@@ -6,12 +7,14 @@ use gloo_storage::{LocalStorage, Storage};
 use wallet_adapter::WalletAdapter;
 
 pub mod components;
+pub mod database;
 
 #[derive(Debug, PartialEq, Eq, Clone)]
 pub(crate) struct DioxusWalletAdapter {
     connection: WalletAdapter,
     show_connect_modal: bool,
     favorite_assets: Vec<String>,
+    tokens: Vec<TokenInfo>,
 }
 
 #[component]
@@ -22,6 +25,7 @@ fn App() -> Element {
             show_connect_modal: false,
             favorite_assets: LocalStorage::get::<Vec<String>>("favorite_assets")
                 .unwrap_or_default(),
+            tokens: vec![],
         })
     });
 

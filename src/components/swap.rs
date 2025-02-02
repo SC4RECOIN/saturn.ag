@@ -1,4 +1,5 @@
 use dioxus::prelude::*;
+use dioxus_logger::tracing::error;
 use solana_sdk::pubkey::Pubkey;
 use std::str::FromStr;
 
@@ -7,13 +8,21 @@ use crate::{
         asset_select::{AssetSelect, AssetSelectMode},
         wallet::WalletConnect,
     },
+    database::{client::get_db_client, tokens::get_tokens},
     DioxusWalletAdapter,
 };
 
 #[component]
 pub fn Swap() -> Element {
-    let adapter: Signal<DioxusWalletAdapter> = use_context();
+    let mut adapter: Signal<DioxusWalletAdapter> = use_context();
     let connected = adapter.read().connection.is_connected();
+    let tokens = use_resource(move || get_tokens(get_db_client()));
+
+    use_effect(move || match &*tokens.read_unchecked() {
+        Some(Ok(tokens)) => adapter.write().tokens = tokens.clone(),
+        Some(Err(e)) => error!("error getting: {:?}", e),
+        None => (),
+    });
 
     let input_mint =
         use_signal(|| Pubkey::from_str("EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v").unwrap());
