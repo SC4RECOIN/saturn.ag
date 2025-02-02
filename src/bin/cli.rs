@@ -51,6 +51,14 @@ async fn update_assets() {
         .await
         .expect("failed to create connection pool");
 
+    // fetch existing token addresses from the database
+    let existing_addresses: Vec<String> = sqlx::query_scalar("SELECT address FROM tokens")
+        .fetch_all(&pool)
+        .await
+        .expect("failed to fetch existing token addresses");
+
+    println!("found {} existing tokens in database", existing_addresses.len());
+
     let client = reqwest::Client::new();
     let response = client
         .get("https://token.jup.ag/all")
@@ -63,16 +71,21 @@ async fn update_assets() {
         .await
         .expect("failed to parse assets from Jupiter");
 
-    // filter out tokens without logo_uri
+    // filter out tokens without logo_uri and those that already exist in the database
     let tokens: Vec<TokenInfo> = tokens.into_iter()
-        .filter(|token| token.logo_uri.is_some())
+        .filter(|token| token.logo_uri.is_some() && !existing_addresses.contains(&token.address))
         .collect();
 
-    println!("successfully fetched {} tokens with logos", tokens.len());
+    println!("found {} new tokens with logos to add", tokens.len());
+
+    if tokens.is_empty() {
+        println!("no new tokens to add to database");
+        return;
+    }
 
     // process tokens in batches of 1000
     for (i, chunk) in tokens.chunks(1000).enumerate() {
-        println!("processing chunk ({})", (i+1) * chunk.len());
+        println!("processing chunk {}", i + 1);
 
         let mut query_builder = sqlx::QueryBuilder::new(
             "INSERT INTO tokens (address, decimals, logo_uri, name, symbol) "
@@ -86,17 +99,9 @@ async fn update_assets() {
                 .push_bind(&token.symbol);
         });
 
-        query_builder.push(
-            " ON CONFLICT (address) DO UPDATE SET
-                decimals = EXCLUDED.decimals,
-                logo_uri = EXCLUDED.logo_uri,
-                name = EXCLUDED.name,
-                symbol = EXCLUDED.symbol"
-        );
-
         match query_builder.build().execute(&pool).await {
-            Ok(result) => println!("successfully upserted batch of {} tokens", result.rows_affected()),
-            Err(e) => eprintln!("error upserting batch: {}", e),
+            Ok(result) => println!("successfully inserted batch of {} tokens", result.rows_affected()),
+            Err(e) => eprintln!("error inserting batch: {}", e),
         }
 
         sleep(Duration::from_millis(100)).await;
