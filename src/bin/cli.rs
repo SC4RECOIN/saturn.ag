@@ -1,4 +1,4 @@
-use std::str::FromStr;
+use std::{collections::HashSet, str::FromStr};
 
 use clap::{Parser, Subcommand};
 use dotenv::dotenv;
@@ -38,13 +38,10 @@ struct TokenInfo {
 }
 
 async fn update_assets() {
-    println!("fetching assets from Jupiter...");
+    let database_url =
+        std::env::var("DB_CONNECTION_STRING").expect("DATABASE_URL must be set in environment");
 
-    let database_url = std::env::var("DB_CONNECTION_STRING")
-        .expect("DATABASE_URL must be set in environment");
-
-    let options = PgConnectOptions::from_str(&database_url)
-        .expect("failed to parse database url");
+    let options = PgConnectOptions::from_str(&database_url).expect("failed to parse database url");
 
     // create connection pool
     let pool = PgPool::connect_with(options)
@@ -57,9 +54,16 @@ async fn update_assets() {
         .await
         .expect("failed to fetch existing token addresses");
 
-    println!("found {} existing tokens in database", existing_addresses.len());
+    println!(
+        "found {} existing tokens in database",
+        existing_addresses.len()
+    );
 
-    let client = reqwest::Client::new();
+    let client = reqwest::Client::builder()
+        .timeout(Duration::from_secs(30))
+        .build()
+        .expect("failed to build reqwest client");
+
     let response = client
         .get("https://token.jup.ag/all")
         .send()
@@ -71,9 +75,14 @@ async fn update_assets() {
         .await
         .expect("failed to parse assets from Jupiter");
 
+    println!("fetched {} tokens from Jupiter", tokens.len());
+
+    let existing: HashSet<String> = existing_addresses.into_iter().collect();
+
     // filter out tokens without logo_uri and those that already exist in the database
-    let tokens: Vec<TokenInfo> = tokens.into_iter()
-        .filter(|token| token.logo_uri.is_some() && !existing_addresses.contains(&token.address))
+    let tokens: Vec<TokenInfo> = tokens
+        .into_iter()
+        .filter(|token| token.logo_uri.is_some() && !existing.contains(&token.address))
         .collect();
 
     println!("found {} new tokens with logos to add", tokens.len());
@@ -88,7 +97,7 @@ async fn update_assets() {
         println!("processing chunk {}", i + 1);
 
         let mut query_builder = sqlx::QueryBuilder::new(
-            "INSERT INTO tokens (address, decimals, logo_uri, name, symbol) "
+            "INSERT INTO tokens (address, decimals, logo_uri, name, symbol) ",
         );
 
         query_builder.push_values(chunk, |mut b, token| {
@@ -100,7 +109,10 @@ async fn update_assets() {
         });
 
         match query_builder.build().execute(&pool).await {
-            Ok(result) => println!("successfully inserted batch of {} tokens", result.rows_affected()),
+            Ok(result) => println!(
+                "successfully inserted batch of {} tokens",
+                result.rows_affected()
+            ),
             Err(e) => eprintln!("error inserting batch: {}", e),
         }
 
