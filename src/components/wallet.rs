@@ -31,10 +31,10 @@ pub fn WalletConnect(is_large: Option<bool>) -> Element {
     };
 
     let disconnect_wallet = move |_| {
-        spawn(async move {  
-        let res = adapter.write().connection.disconnect().await;
-        match res {
-            Ok(_) => adapter.write().show_connect_modal = false,
+        spawn(async move {
+            let res = adapter.write().connection.disconnect().await;
+            match res {
+                Ok(_) => adapter.write().show_connect_modal = false,
                 Err(e) => info!("Error disconnecting wallet: {}", e),
             }
         });

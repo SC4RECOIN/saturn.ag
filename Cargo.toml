@@ -14,6 +14,11 @@ console_error_panic_hook = "0.1.7"
 solana-sdk = "1.18.0"
 wallet-adapter = { git = "https://github.com/JamiiDao/SolanaWalletAdapter" }
 gloo-storage = "0.3.0"
+clap = { version = "4.4", features = ["derive"] }
+dotenv = "0.15.0"
+reqwest = { version = "0.11", features = ["json"] }
+serde = { version = "1.0", features = ["derive"] }
+tokio = { version = "1.0", features = ["full"] }
 
 [profile]
 
@@ -26,3 +31,7 @@ inherits = "dev"
 
 [profile.android-dev]
 inherits = "dev"
+
+[[bin]]
+name = "saturn_cli"
+path = "src/bin/cli.rs"
