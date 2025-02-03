@@ -1,18 +1,42 @@
-name: github pages
+name: Release to Github Pages
 
 on:
   push:
-    branches:
-      - main
-
+    branches: [main]
+  workflow_dispatch:
 permissions:
-  contents: write
+  contents: write # for committing to gh-pages branch.
+  pages: write
+  id-token: write
 
-jobs:
-  build-deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Dioxus Deploy"
-        uses: DioxusLabs/deploy-action@0.1.2
-        with:
-          outDirectory: target/dx/saturn-aggregator/release/web/public
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v3
+    - uses: actions-rs/toolchain@v1.0.6
+      with:
+        toolchain: ${{ inputs.toolchain }}
+        profile: minimal
+        target: wasm32-unknown-unknown
+        override: true
+    - uses: Swatinem/rust-cache@v2
+    - name: Install Dioxus-CLI
+      shell: bash
+      run: cargo install dioxus-cli
+
+    - name: Build Project
+      shell: bash
+      run: dx build --release --target=web
+
+    # deploy static pages
+    - name: Setup Pages
+      uses: actions/configure-pages@v4
+      with:
+        enablement: true
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v2
+      with:
+        path: "./target/dx/saturn-aggregator/release/web/public"
+    - name: Deploy to GitHub Pages 🚀
+      id: deployment
+      uses: actions/deploy-pages@v3

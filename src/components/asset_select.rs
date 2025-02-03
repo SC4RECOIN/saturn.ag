@@ -76,7 +76,7 @@ pub fn AssetSelect(mode: Signal<AssetSelectMode>) -> Element {
                 }
 
                 // Token list
-                div { class: "flex flex-col mb-2 max-h-[350px] overflow-y-scroll",
+                div { class: "max-h-[350px] overflow-y-scroll flex flex-col mb-2",
                     for token in tokens {
                         TokenItem {
                             symbol: token.symbol,
