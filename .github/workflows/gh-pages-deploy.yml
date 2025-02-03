@@ -3,40 +3,54 @@ name: Release to Github Pages
 on:
   push:
     branches: [main]
-  workflow_dispatch:
+
 permissions:
   contents: write # for committing to gh-pages branch.
   pages: write
   id-token: write
 
-runs:
-  using: "composite"
-  steps:
-    - uses: actions/checkout@v3
-    - uses: actions-rs/toolchain@v1.0.6
-      with:
-        toolchain: ${{ inputs.toolchain }}
-        profile: minimal
-        target: wasm32-unknown-unknown
-        override: true
-    - uses: Swatinem/rust-cache@v2
-    - name: Install Dioxus-CLI
-      shell: bash
-      run: cargo install dioxus-cli
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
-    - name: Build Project
-      shell: bash
-      run: dx build --release --target=web
+jobs:
+  Github-Pages-Release:
+    timeout-minutes: 15
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-    # deploy static pages
-    - name: Setup Pages
-      uses: actions/configure-pages@v4
-      with:
-        enablement: true
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v2
-      with:
-        path: "./target/dx/saturn-aggregator/release/web/public"
-    - name: Deploy to GitHub Pages 🚀
-      id: deployment
-      uses: actions/deploy-pages@v3
+      - name: Install nightly Rust
+        uses: dtolnay/rust-toolchain@nightly
+
+      - name: Add WASM target
+        run: rustup target add wasm32-unknown-unknown
+
+      - name: Install Tailwind CSS
+        run: npm install -D tailwindcss@3
+
+      - name: Install Dioxus-CLI
+        shell: bash
+        run: cargo install dioxus-cli
+
+      - name: Build Project
+        shell: bash
+        run: dx build --release --target=web
+
+      # deploy static pages
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+        with:
+          enablement: true
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: "./target/dx/saturn-aggregator/release/web/public"
+
+      - name: Deploy to GitHub Pages 🚀
+        id: deployment
+        uses: actions/deploy-pages@v3
